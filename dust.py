@@ -9,3 +9,5 @@ cursor.execute("""CREATE TABLE albums
                   (title text, artist text, release_date text, 
                    publisher text, media_type text) 
                """)
+
+print "hello world"
