@@ -1,15 +1,4 @@
-<h2>Palliatives</h2>
-
-<div>
-  <label>Palliative:
-    <input #palliativeName />
-  </label>
-
-  <!-- (click) passes input value to add() and then clears the input -->
-  <button (click)="add(palliativeName.value); palliativeName.value=''">
-    add
-  </button>
-</div>
+<app-palliative-search></app-palliative-search>
 
 <ul class="palliatives">
   <li *ngFor="let palliative of palliatives">
@@ -20,3 +9,14 @@
 </ul>
 
 <app-palliative-detail [palliative]="selectedPalliative"></app-palliative-detail>
+
+
+<div>
+  <label>Add Palliative:
+    <input #palliativeName />
+  </label>
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="add(palliativeName.value); palliativeName.value=''">
+      add
+  </button>
+</div>

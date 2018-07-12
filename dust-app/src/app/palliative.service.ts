@@ -69,7 +69,7 @@ export class PalliativeService {
       // if not search term, return empty palliative array
       return of([]);
     }
-    return this.http.get<Palliative[]>(`${this.serviceUrl}/?name=${term}`)
+    return this.http.get<Palliative[]>(`${this.serviceUrl}/?shortname=${term}`)
       .pipe(
         tap(_ => this.log(`found palliatives matching "${term}"`)),
         catchError(this.handleError<Palliative[]>('searchPalliatives', []))
