@@ -15,7 +15,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserService {
-  private usersUrl = '/api/users';
+  private usersUrl = '/dust.php?debug/users';
 
   constructor(
     private http: HttpClient,
@@ -53,7 +53,7 @@ export class UserService {
   /** POST: add a new user to the server */
   addUser(user: User): Observable<User> {
     return this.http.post<User>(this.usersUrl, user, httpOptions).pipe(
-      tap((user: User) => this.log(`added user w/ id=${user.id}`)),
+      tap((_user: User) => this.log(`added user w/ id=${_user.id}`)),
       catchError(this.handleError<User>('addUser'))
     );
   }

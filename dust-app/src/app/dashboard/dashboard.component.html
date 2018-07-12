@@ -1,4 +1,5 @@
 <h3>Top Users</h3>
+
 <div class="grid grid-pad">
   <a *ngFor="let user of users" class="col-1-4" routerLink="/detail/{{user.id}}">
   <div class="module user">
@@ -7,4 +8,4 @@
   </a>
 </div>
 
-<app-hero-search></app-hero-search>
+<app-user-search></app-user-search>

@@ -1,7 +1,3 @@
-<p>
-  user-search works!
-</p>
-
 <div id="search-component">
   <h4>User Search</h4>
 
@@ -9,8 +5,7 @@
 
   <ul class="search-result">
     <li *ngFor="let user of users$ | async">
-      <a routerLink="/detail/{{user.id}}">
-      {{user.username}}</a>
+      <a routerLink="/detail/{{user.id}}">{{user.username}}</a>
     </li>
   </ul>
 </div>
