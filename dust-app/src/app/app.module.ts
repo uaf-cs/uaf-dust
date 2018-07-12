@@ -12,6 +12,9 @@ import { MessagesComponent } from './messages/messages.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserSearchComponent } from './user-search/user-search.component';
+import { PalliativesComponent } from './palliatives/palliatives.component';
+import { PalliativeDetailComponent } from './palliative-detail/palliative-detail.component';
+import { PalliativeSearchComponent } from './palliative-search/palliative-search.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import { UserSearchComponent } from './user-search/user-search.component';
     UserDetailComponent,
     MessagesComponent,
     DashboardComponent,
-    UserSearchComponent
+    UserSearchComponent,
+    PalliativesComponent,
+    PalliativeDetailComponent,
+    PalliativeSearchComponent
   ],
   imports: [
     BrowserModule,

@@ -15,7 +15,8 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserService {
-  private usersUrl = '/dust.php?debug/users';
+  private usersUrl = '/dust.php/users';
+  lastUserId = 0;
 
   constructor(
     private http: HttpClient,
@@ -25,6 +26,7 @@ export class UserService {
     // this.messageService.add(`UserService: fetched user id = ${id}`);
     // return of(USERS.find(user => user.id === id));
 
+    this.lastUserId = id;
     const url = `${this.usersUrl}/${id}`;
     return this.http.get<User>(url).pipe(
       tap(_ => this.log(`fetched user id=${id}`)),
