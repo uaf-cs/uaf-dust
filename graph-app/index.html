@@ -13,18 +13,42 @@
         <h1>Graph App</h1>
         <script>
             // Code goes here
-            //(Diane) for some reason when I posted it here it wouldn't cooperate but when I posted it outside of the script it worked.
-            // I don't think this is quite what you had in mind, I'll keep on plugging away on it tomorrow to write a program.
+            <head>
+  <!-- Plotly.js -->
+   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
 
+<body>
+  <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <script>
+    var trace1 = {
+  x: [1, 2, 3, 4],
+  y: [10, 15, 13, 17],
+  mode: 'markers'
+};
+
+var trace2 = {
+  x: [2, 3, 4, 5],
+  y: [16, 5, 11, 10],
+  mode: 'lines'
+};
+
+var trace3 = {
+  x: [1, 2, 3, 4],
+  y: [12, 9, 15, 12],
+  mode: 'lines+markers'
+};
+
+var data = [ trace1, trace2, trace3 ];
+
+var layout = {};
+
+Plotly.newPlot('myDiv', data, layout);
+  </script>
+</body>
 
         let g = new GraphApp();
         </script>
-            //graph I made and embedded
-                    <div/>
-                    <a href="https://plot.ly/~dmmurph/1/?share_key=AmidU8jeSjDM3QkU1cPAEW" target="_blank" title="Plot 1" style="display: block; text-align: center;">
-                    <img src="https://plot.ly/~dmmurph/1.png?share_key=AmidU8jeSjDM3QkU1cPAEW" alt="Plot 1" style="max-width: 100%;width: 600px;"  width="600" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" />
-                    </a>
-                    <script data-plotly="dmmurph:1" sharekey-plotly="AmidU8jeSjDM3QkU1cPAEW" src="https://plot.ly/embed.js" async/></script>
-                </div>
+
     </body>
     </html>
