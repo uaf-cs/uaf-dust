@@ -21,25 +21,16 @@
 <body>
   <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
   <script>
-    var trace1 = {
-  x: [1, 2, 3, 4],
-  y: [10, 15, 13, 17],
+var number = prompt("give a number");
+var number1 = parseInt(number);
+
+var trace2 = {
+  x: [number1],
+  y: [number1+1],
   mode: 'markers'
 };
 
-var trace2 = {
-  x: [2, 3, 4, 5],
-  y: [16, 5, 11, 10],
-  mode: 'lines'
-};
-
-var trace3 = {
-  x: [1, 2, 3, 4],
-  y: [12, 9, 15, 12],
-  mode: 'lines+markers'
-};
-
-var data = [ trace1, trace2, trace3 ];
+var data = [ trace2 ];
 
 var layout = {};
 
