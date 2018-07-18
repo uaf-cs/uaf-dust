@@ -8,7 +8,7 @@ class GraphApp {
     constructor() {
         let e = document.createElement('div');
         e.id = 'myDiv';
-        e.innerHTML = "Hello, world kk";
+        e.innerHTML = "Hello, world";
         document.body.appendChild(e);
     }
 
@@ -17,7 +17,7 @@ class GraphApp {
         let str = e.textContent;
 
         let input = str.split(' ');
-        let conc = []; //concentrations
+        let conc = []; //concentrations of dust in water
         for (let i of input) {
             conc.push(parseFloat(i));
         }
