@@ -1,45 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Graph App</title>
-        <link rel="stylesheet" type="text/css" href="graph-app.css">
-        <!-- Latest compiled and minified plotly.js JavaScript -->
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <!-- <script src="https://cdn.plot.ly/plotly-latest.js"></script> -->
 
-        <script src="graph-app.js"></script>
-    </head>
-    <body>
-        <h1>Graph App</h1>
-        <script>
-            // Code goes here
-            <head>
-  <!-- Plotly.js -->
-   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<head>
+    <title>Graph App</title>
+    <link rel="stylesheet" type="text/css" href="graph-app.css">
+    <!-- Latest compiled and minified plotly.js JavaScript -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- <script src="https://cdn.plot.ly/plotly-latest.js"></script> -->
+    <script src="graph-app.js"></script>
 </head>
 
 <body>
-  <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
-  <script>
-var number = prompt("give a number");
-var number1 = parseInt(number);
+    <h1>Graph App</h1>
 
-var trace2 = {
-  x: [number1],
-  y: [number1+1],
-  mode: 'markers'
-};
+    <textarea id="rawdata" cols="50" rows="25"></textarea>
+    <br/>
+    <input type="button" value="Process" onclick="g.run()" />
 
-var data = [ trace2 ];
+    <div id="myDiv">
+        <!-- Plotly chart will be drawn inside this DIV -->
+    </div>
 
-var layout = {};
-
-Plotly.newPlot('myDiv', data, layout);
-  </script>
+    <script lang="JavaScript">
+        let g = new GraphApp();
+        //g.run();
+    </script>
 </body>
 
-        let g = new GraphApp();
-        </script>
+</body>
 
-    </body>
-    </html>
+</html>
