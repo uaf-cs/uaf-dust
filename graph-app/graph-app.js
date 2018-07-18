@@ -15,20 +15,24 @@ class GraphApp {
     run() {
         let e = document.getElementById('rawdata');
         let str = e.textContent;
-        let input = str.split(' ');
-        let conc = []; //concentrations
-        for (let i of input) {
-            conc.push(parseFloat(i));
+        if (!str)
+            return;
+        let inputStrings = str.split(' ');
+        let concentrations = []; //concentrations of dust in water
+        for (let i of inputStrings) {
+            concentrations.push(parseFloat(i));
         }
         //x axis values
-        var seconds;
-        for (let seconds of input.length(conc)) {
-            seconds + 1;
+        let seconds = [];
+        // for (let seconds of inputStrings.length(concentrations)){
+        // seconds + 1;
+        for (let C of concentrations) {
+            seconds.push(C + 1);
         }
         //var numbers1= +input;//parseInt(input);
         var trace2 = {
             x: seconds,
-            y: conc,
+            y: concentrations,
             mode: 'markers'
         };
         var data = [trace2];
@@ -41,8 +45,5 @@ class GraphApp {
     }
     plotGraph(dataPoints) {
         //DIANE PUT GRAPH STUFF HERE
-        x: seconds,
-        y: conc,
-        mode: 'markers'
     }
 }
