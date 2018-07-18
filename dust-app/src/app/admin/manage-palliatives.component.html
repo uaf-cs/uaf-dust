@@ -1,0 +1,14 @@
+<h2>Manage Palliatives</h2>
+
+<div *ngIf="!palliatives$">Loading...</div>
+
+<div *ngIf="palliatives$ | async as palliatives">
+
+<!-- <app-palliative-list></app-palliative-list> -->
+
+<ul>
+    <li *ngFor="let palliative of palliatives">{{palliative.shortname}}</li>
+</ul>
+</div>
+
+<button (click)="gotoDashboard()">Back to dashboard</button>

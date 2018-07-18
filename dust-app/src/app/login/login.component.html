@@ -1,0 +1,13 @@
+<div class="popup padded">
+    <h3>LOGIN</h3>
+    <p>{{message}}</p>
+    <div *ngIf="!authService.isLoggedIn">
+      <label>Username:<input [(ngModel)]="username" placeholder="username"></label><br/>
+      <label>Password:<input type="password" [(ngModel)]="password" placeholder="password"></label>
+    </div>
+    <p>
+      <button (click)="login()" *ngIf="!authService.isLoggedIn">Login</button>
+      <button (click)="logout()" *ngIf="authService.isLoggedIn">Logout</button>
+      <button (click)="cancel()">Cancel</button>
+    </p>    
+</div>

@@ -1,0 +1,55 @@
+<div *ngIf="palliative">
+
+  <h3>{{palliative.shortname | uppercase}} Details</h3>
+  <h4>{{palliative.longname}}</h4>
+  <table class="altcolors"><tbody class="altcolors">
+    <tr><td><label>id:</label></td><td class="description">{{palliative.id}}</td></tr>
+    <tr><td><label>Description:</label></td><td class="description">{{palliative.description}}</td></tr>
+    <tr><td><label>userid:</label></td><td>{{palliative.userid}}<div *ngIf="user"><span> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></div></td></tr>
+    <tr><td><label>mprt <span style="font-family: serif;">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr></tbody>
+  </table>
+
+  <div class="mprtGraph">
+    <label>MPRT <span style="font-family: serif;">&tau;</span> Graph</label>
+    <button *ngIf="!graphVisible" (click)="showGraph()">show</button>
+    <button *ngIf="graphVisible" (click)="hideGraph()">hide</button>
+    <div id="mprtGraphDiv" *ngIf="graphVisible">Graph goes here!</div>
+  </div>
+
+  <div class="dataPointList">
+    <label>Data Points</label>
+      <button *ngIf="!dataVisible" (click)="showData()">show</button>
+      <button *ngIf="dataVisible" (click)="hideData()">hide</button>
+    
+    <table *ngIf="dataVisible">
+      <tbody class="altcolors">
+      <tr><th>t</th><th>C</th></tr>
+      <tr *ngFor="let dp of palliative.data" class="dataPoint">
+        <td>{{dp.t}}</td>
+        <td>{{dp.C}}</td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+
+  <div><label>Short Name:</label><input [(ngModel)]="palliative.shortname" placeholder="shortname"/></div>
+  <div><label>Long Name:</label><input [(ngModel)]="palliative.longname" placeholder="longname"/></div>
+  <div><label>Description:</label><input [(ngModel)]="palliative.description" placeholder="description"/></div>
+  <div><label>User Id:</label><input [(ngModel)]="palliative.userid" placeholder="userid"/></div>
+
+  <button (click)="save()">save</button>
+  <button (blick)="cancel()">close</button>
+
+    <div class="dataPointList padded">
+      <h3>Data Points</h3>
+      <table>
+        <tr><th>t</th><th>C</th></tr>
+        <tr *ngFor="let dp of palliative.data" class="dataPoint">
+          <td><input [(ngModel)]="dp.t"/></td>
+          <td><input [(ngModel)]="dp.C"/></td>
+        </tr>
+      </table>
+      <button (click)="addDatapoint()">add datapoint</button>
+    </div>
+
+</div>

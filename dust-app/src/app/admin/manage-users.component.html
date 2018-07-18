@@ -1,0 +1,10 @@
+<h2>Manage Users</h2>
+
+<div *ngIf="!users$">Loading...</div>
+<div *ngIf="users$ | async as users">
+    <ul>
+        <li *ngFor="let user of users">{{user.username}}</li>
+    </ul>
+</div>
+<!-- <app-user-list></app-user-list> -->
+<button (click)="gotoDashboard()">Back to dashboard</button>

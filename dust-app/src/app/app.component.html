@@ -1,8 +1,44 @@
+<table class="branding branding-uaf">
+  <tr>
+    <td>
+      <a href="http://www.uaf.edu">
+        <img width="48px" src="assets/uaf-logo-web.png" />
+      </a>
+    </td>
+    <td width="100%">
+      <div>Alaska University Transportation Center (AUTC)</div>
+      <div>Institute of Northern Engineering</div>
+    </td>
+  </tr>
+</table>
+
 <h1>{{title}}</h1>
 <nav>
   <a routerLink="/dashboard">Dashboard</a>
-  <a routerLink="/palliatives">Palliatives</a>
-  <a routerLink="/users">Users</a>
+  <a routerLink="/palliatives" routerLinkActive="active">Palliatives</a>
+  <a routerLink="/users" routerLinkActive="active">Users</a>
+  <a routerLink="/admin" routerLinkActive="active">Admin</a>
+  <span *ngIf="!authService.isLoggedIn"><a [routerLink]="[{ outlets: { popup: ['login'] } }]" routerLinkActive="active">Log in</a></span>
+  <span *ngIf="authService.isLoggedIn"><a [routerLink]="[{ outlets: { popup: ['logout'] } }]" routerLinkActive="active">Log out</a>
+    Signed in as {{authService.signedInUser}}</span>
 </nav>
-<router-outlet></router-outlet>
+
+<div class="popup"><router-outlet name="popup"></router-outlet></div>
+<div class="mainnav"><router-outlet></router-outlet></div>
+
 <app-messages></app-messages>
+
+<hr/>
+
+<table class="branding branding-cset">
+    <tr>
+      <td>
+        <a href="http://cset.uaf.edu/">
+          <img width="48px" src="assets/cset-logo-web.png" />
+        </a>
+      </td>
+      <td width="100%">
+        <div class="branding-cset">Center for Safety Equity in Transportation</div>
+      </td>
+    </tr>
+  </table>

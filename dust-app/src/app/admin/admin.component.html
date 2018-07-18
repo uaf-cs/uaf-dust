@@ -1,0 +1,13 @@
+
+
+<nav>
+  <h3>Administration Area</h3>
+  <a routerLink="./" routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+  <a routerLink="./palliatives" routerLinkActive="active">Manage Palliatives</a>
+  <a routerLink="./users" routerLinkActive="active">Manage Users</a>
+</nav>
+
+<!-- <app-admin-dashboard></app-admin-dashboard> -->
+
+<router-outlet></router-outlet>
