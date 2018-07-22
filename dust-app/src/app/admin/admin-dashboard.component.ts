@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
+import { DustDBService } from '../dustdb.service';
+
 @Component({
     selector: 'app-admin-dashboard',
     templateUrl: 'admin-dashboard.component.html',
@@ -8,7 +10,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class AdminDashboardComponent {
     constructor(
+        private dustdbService: DustDBService,
         private router: Router,
         private route: ActivatedRoute
     ) { }
+
+    initializeDB() {
+        this.dustdbService.initializeDB();
+    }
 }

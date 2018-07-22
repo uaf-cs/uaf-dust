@@ -13,7 +13,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class PalliativeService {
-  private serviceUrl = '/dust.php/palliatives';
+  private serviceUrl = 'http://localhost:8000/dust.php/palliatives';
 
   constructor(
     private http: HttpClient,
