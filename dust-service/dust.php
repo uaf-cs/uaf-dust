@@ -36,6 +36,18 @@
     $fileContents = file_get_contents('php://input');
     $input = json_decode($fileContents, true);
 
+    if($method == 'OPTIONS') {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
+        header('Access-Control-Max-Age: 1000');
+        if(array_key_exists('HTTP_ACCESS_CONTROL_REQUEST_HEADERS', $_SERVER)) {
+            header('Access-Control-Allow-Headers: ' . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+        } else {
+            header('Access-Control-Allow-Headers: *');
+        }
+        exit(0);
+    }
+
     // echo "<br>METHOD ";
     // var_dump($method);
     // echo "<br>REQUEST ";
@@ -46,30 +58,30 @@
     $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
     $key = array_shift($request) + 0;
 
-    // echo "<br>TABLE ";
-    // var_dump($table);
-    // echo "<br>KEY ";
-    // var_dump($key);
-
-    $link = null;
     $columns = preg_replace('/[^a-z0-9_]+/i', '', array_keys($input));
-    $values = array_map(function ($value) use ($link) {
+    $values = array_map(function ($key, $value) {
         if ($value === null) return null;
-        return (string)$value;
-        //return mysqli_real_escape_string($link, (string)$value);
-    }, array_values($input));
-
-    // echo "<br>COLUMNS ";
-    // var_dump($columns);
-    // echo "<br>VALUES ";
-    // var_dump($values);
+        if ($key == 'data') return '\'' . json_encode($value) . '\'';
+        return '"' . (string)SQLite3::escapeString($value) . '"';
+    }, $columns, array_values($input));
 
     // build the SET part of the SQL command
     $set = '';
     for ($i = 0; $i < count($columns); $i++) {
         $set .= ($i > 0 ? ',':'') . '`' . $columns[$i] . '`=';
-        $set .= ($values[$i] === null) ? 'NULL' : '"' . $values[$i] . '"';
+        $set .= ($values[$i] === null) ? 'NULL' : $values[$i];
     }
+
+    $vstr = '(';
+    for ($i = 0; $i < count($columns); $i++) {
+        $vstr .= ($i > 0 ? ', ': '') . '`' . $columns[$i] . '`';
+    }
+    $vstr .= ') VALUES (';
+    for ($i = 0; $i < count($columns); $i++) {
+        $vstr .= ($i > 0 ? ', ': '');
+        $vstr .= ($values[$i] === null) ? 'NULL' : $values[$i];
+    }
+    $vstr .= ')';
 
     // echo "<br>SET ";
     // var_dump($set);
@@ -83,41 +95,63 @@
             $sql = "UPDATE `$table` SET $set WHERE id=$key";
             break;
         case 'POST':
-            $sql = "INSERT INTO `$table` SET $set";
+            $sql = "INSERT INTO `$table` $vstr";
             break;
         case 'DELETE':
-            $sql = "DELETE `$table` WHERE id=$key";
+            $sql = "DELETE FROM `$table` WHERE id=$key";
             break;
     }
-    
-    // echo "<br>SQL ";
-    // var_dump($sql);
-    // if ($db->createDatabase()) {
-    //     echo "<br>CREATED DATABASE<br>";
-    // } else {
-    //     echo "<br>UNABLE TO CREATE DATABASE<br>";
-    // }
-    $result = $db->query($sql);
+
+    if ($method == 'GET')
+        $result = $db->query($sql);
+    else
+        $result = $db->exec($sql);
+
+    $log = "<br/>METHOD: " . $method . " | TABLE: " . $table . " | KEY: " . $key . " | input: " . $fileContents . " | " . $sql . " | " . $db->lastErrorMsg();
+    $date = date('m/d/Y h:i:s a', time());
+    $db->exec("INSERT INTO log (dtg, log) VALUES ('${date}', '${log}');");
 
     if (!$result) {
-        // echo "<br>IT DIDN'T WORK :(";
         http_response_code(404);
         die(json_encode($db->lastErrorMsg()));
-    } else {
-        // echo "<br>RESULT";
-        // var_dump($result);
     }
 
-    // echo "<br>RESULTS";
-    if ($method == 'GET') {
+    // // Redo query if not a GET request
+    // if ($method == 'GET') {
+    //     $sql = "SELECT * FROM `$table`" . ($key ? " WHERE id=$key" : '');
+    //     $result = $db->query($sql);
+    
+    //     if (!$key) echo '[';
+    //     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+    //         echo json_encode($row);
+    //     }
+    //     if (!$key) echo ']';      
+    // }
+
+    // // echo "<br>RESULTS";
+    if ($method == 'GET' || $method == 'PUT') {
         if (!$key) echo '[';
+        $i = 0;
         while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-            // echo "<br>\n";
+            if ($i++ != 0) echo ", ";
+            if (array_key_exists('data', $row)) {
+                $row['data'] = json_decode($row['data']);
+            }
             echo json_encode($row);
         }
         if (!$key) echo ']';
     } else if ($method == 'POST') {
-        // insert new record
+        if (!$key) echo '[';
+        $i = 0;
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            if ($i++ != 0) echo ", ";
+            if (array_key_exists('data', $row)) {
+                echo $row['data'];
+            } else {
+                echo json_encode($row);
+            }
+        }
+        if (!$key) echo ']';        
     } else {
         // update/delete record
     }

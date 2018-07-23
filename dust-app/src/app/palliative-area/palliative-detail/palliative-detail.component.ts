@@ -44,6 +44,9 @@ export class PalliativeDetailComponent implements OnInit {
   }
 
   addDatapoint(): void {
+    if (!(this.palliative.data instanceof Array)) {
+      this.palliative.data = [];
+    }
     this.palliative.data.push({ t: 0, C: 0 });
   }
 

@@ -38,7 +38,7 @@ export class PalliativeService {
 
   /** PUT: update the palliative on the server */
   updatePalliative(palliative: Palliative): Observable<any> {
-    return this.http.put(this.serviceUrl, palliative, httpOptions).pipe(
+    return this.http.put(this.serviceUrl + `/${palliative.id}`, palliative, httpOptions).pipe(
       tap(_ => this.log(`updated palliative id=${palliative.id}`)),
       catchError(this.handleError<any>('updatePalliative'))
     );

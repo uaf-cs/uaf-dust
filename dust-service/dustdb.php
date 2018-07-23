@@ -71,58 +71,70 @@
             $sql =<<<EOF
                 DROP TABLE users;
                 DROP TABLE palliatives;
+                DROP TABLE auth;
+                DROP TABLE log;
 EOF;
             $ret = $this->exec($sql);
+            $results = array(
+                'operation' => 'create',
+                'results' => 'success',
+                'result' => TRUE
+            );
             if (!$ret) {
-                echo $this->lastErrorMsg();
-                var_dump($sql);
-                //return false;
+                $results['results'] = "SQL: '${sql}' | LastErrorMsg(): " . var_export($this->lastErrorMsg());
+                $results['result'] = FALSE;
             }
 
             $sql =<<<EOF
                 CREATE TABLE users
                 (id          INTEGER PRIMARY KEY AUTOINCREMENT,
                 username     TEXT NOT NULL,
-                password     TEXT NOT NULL,
-                flags        INTEGER NOT NULL,
-                firstname    TEXT NOT NULL,
-                lastname     TEXT NOT NULL,
-                organization TEXT NOT NULL,
-                email        TEXT NOT NULL);
+                firstname    TEXT,
+                lastname     TEXT,
+                organization TEXT,
+                email        TEXT);
+
+                CREATE TABLE auth
+                (id         INTEGER PRIMARY KEY,
+                 password   TEXT NOT NULL,
+                 flags      INTEGER NOT NULL);
+
+                CREATE TABLE log
+                (dtg DATE,
+                 log        TEXT);
 
                 CREATE TABLE palliatives
                 (id         INTEGER PRIMARY KEY AUTOINCREMENT,
-                fkuser      INTEGER NOT NULL,
-                testid      TEXT NOT NULL,
+                fkuser      INTEGER,
+                testid      TEXT,
                 shortname   TEXT NOT NULL,
-                longname    TEXT NOT NULL,
-                description TEXT NOT NULL,
-                data        TEXT NOT NULL,
-                mprt        REAL NOT NULL);
+                longname    TEXT,
+                description TEXT,
+                data        TEXT,
+                mprt        REAL);
 EOF;
             $ret = $this->exec($sql);
             if (!$ret) {
-                echo $this->lastErrorMsg();
-                var_dump($sql);
-                return false;
+                $results['results'] = "SQL: '${sql}' | LastErrorMsg(): " . var_export($this->lastErrorMsg());
+                $results['result'] = FALSE;
             }
 
             $sql =<<<EOF
                 INSERT INTO users (username, firstname, lastname, organization, email)
                 VALUES ('jbmetzgar', 'Jonathan', 'Metzgar', 'UAF', 'jbmetzgar@alaska.edu');
+
                 INSERT INTO users (username, firstname, lastname, organization, email)
                 VALUES ('dmurph', 'Diane', 'Murph', 'UAF', 'jmmurph@alaska.edu');
 
-                INSERT INTO palliatives (fkuser, shortname, longname, description, data, mprt)
-                VALUES (1, 'Water', 'Water', 'A description of water', '', 0);
+                INSERT INTO palliatives (fkuser, testid, shortname, longname, description, data, mprt)
+                VALUES (1, 'T-000', 'Water', 'Water', 'A description of water', '[]', 0.0);
 EOF;
             $ret = $this->exec($sql);
             if (!$ret) {
-                echo $this->lastErrorMsg();
-                var_dump($sql);
-                return false;
+                $results['results'] = "SQL: '${sql}' | LastErrorMsg(): " . var_export($this->lastErrorMsg());
+                $results['result'] = FALSE;
             }
-            return true;
+            return $results;
         }
 
         /**
@@ -174,10 +186,51 @@ EOF;
          * getUsers returns a JSON object representing the Users table
          */
         function getUsers() {
-            $sql = <<<EOF
-                SELECT username, flags, firstname, lastname, organization, email FROM `users`;
-EOF;
+            $results = array(
+                'operation' => 'getUsers()',
+                'results' => 'success',
+                'result' => TRUE
+            );
+
+            $sql = 'SELECT * FROM `users`';
             $ret = $this->exec($sql);
+            if (!$ret) {
+                $results['results'] = "SQL: '${sql}' | LastErrorMsg(): " . var_export($this->lastErrorMsg());
+                $results['result'] = FALSE;
+            } else {
+                $results['results'] = json_encode($ret);
+            }
+            return $results;
+        }
+
+        /**
+         * getTable returns a JSON object representing a table
+         */
+        function getTable($table) {
+            $results = array(
+                'operation' => 'getTable()',
+                'results' => 'success',
+                'result' => TRUE
+            );
+
+            $results['operation'] = $sql = "SELECT * FROM `${table}`;";
+            $ret = $this->query($sql);
+            if (!$ret) {
+                $results['results'] = "SQL: '${sql}' | LastErrorMsg(): " . var_export($this->lastErrorMsg());
+                $results['result'] = FALSE;
+            } else {
+                $json = '[ ';
+                $count = 0;
+                while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+                    $json .= "<br/>";
+                    $json .= ($count++ == 0 ? '' : ', ') . json_encode($row);
+                    //$count++;
+                }
+                $json .= ']';
+
+                $results['results'] = $json;
+            }
+            return $results; 
         }
     }
 ?>

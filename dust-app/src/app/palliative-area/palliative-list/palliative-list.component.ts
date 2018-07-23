@@ -23,7 +23,8 @@ export class PalliativeListComponent implements OnInit {
     if (!name) { return; }
     this.palliativeService.addPalliative({ id: null, shortname: name } as Palliative)
       .subscribe(palliative => {
-        this.palliatives.push(palliative);
+        // this.palliatives.push(palliative);
+        this.getPalliatives();
       });
   }
 

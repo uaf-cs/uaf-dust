@@ -30,8 +30,7 @@
         $db = new DustDB();
         switch($_POST['request']) {
         case 'initialize':
-            $db->createDatabase();    
-            $rr->response = 'initialized database';
+            $rr->response = print_r($db->createDatabase());
             break;
         case 'adduser':
             $db->addUser($input['param1'], $input['param2']);
@@ -58,12 +57,34 @@
             Token: <input type="text" name="token"><br/>
             <input type="submit">
         </form>
-        <h2>Response</h2>
-<pre>
-<?php
-    echo json_encode(var_dump($input));
-?>
-</pre>
+
+        <h2>Users</h2>
+        <?php
+        $db = new DustDB();
+        $results = $db->getTable('users');
+        echo "operation: " . $results['operation'];
+        echo "<br/>result: " . $results['result'];
+        echo "<br/>results: " . $results['results'];
+        ?>
+
+        <h2>Palliatives</h2>
+        <?php
+        $db = new DustDB();
+        $results = $db->getTable('palliatives');
+        echo "operation: " . $results['operation'];
+        echo "<br/>result: " . $results['result'];
+        echo "<br/>results: " . $results['results'];
+        ?>
+
+        <h2>Log</h2>
+        <?php
+        $db = new DustDB();
+        $results = $db->getTable('log');
+        echo "operation: " . $results['operation'];
+        echo "<br/>result: " . $results['result'];
+        echo "<br/>results: " . $results['results'];
+        $db->exec('DELETE FROM log;')
+        ?>
 </body>
 
 </html>

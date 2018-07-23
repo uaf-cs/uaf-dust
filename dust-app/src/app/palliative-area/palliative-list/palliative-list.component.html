@@ -4,7 +4,7 @@
   <li *ngFor="let palliative of palliatives">
     <a routerLink="/palliatives/detail/{{palliative.id}}">
     <span class="badge">{{palliative.id}}</span>{{palliative.shortname}}</a>
-    <button class="delete" title="delete palliative" (click)="delete(user)">x</button>
+    <button class="delete" title="delete palliative" (click)="delete(palliative)">x</button>
   </li>
 </ul>
 

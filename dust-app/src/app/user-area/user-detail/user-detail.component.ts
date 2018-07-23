@@ -14,6 +14,7 @@ import { UserService } from '../user.service';
 export class UserDetailComponent implements OnInit {
   @Input() user: User;
   user$: Observable<User>;
+  user: User;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,7 +35,10 @@ export class UserDetailComponent implements OnInit {
 
   save(): void {
     this.service.updateUser(this.user)
-      .subscribe(() => this.goBack());
+      .subscribe(() => {
+        // this.goBack()
+        this.getUser();
+      });
   }
 
   gotoUsers(user: User) {
