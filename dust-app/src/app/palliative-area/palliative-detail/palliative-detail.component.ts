@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Palliative } from '../palliative';
+import { Palliative, DustColumnDataPoint } from '../palliative';
 import { PalliativeService } from '../palliative.service';
 import { User } from '../../user-area/user';
 import { UserService } from '../../user-area/user.service';
@@ -121,6 +121,11 @@ export class PalliativeDetailComponent implements OnInit {
   }
 
   clean() {
-    this.palliative.cleanData();
+    let p = new Palliative();
+    for (let value of this.palliative.data) {
+      p.data.push(new DustColumnDataPoint(value.t, value.C));
+    }
+    p.cleanData();
+    this.palliative.data = p.data;
   }
 }

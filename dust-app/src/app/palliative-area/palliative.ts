@@ -39,33 +39,60 @@ export class Palliative {
             points.push(new DustColumnDataPoint());
         }
 
+        for (let e of this.data) {
+            if (typeof e.t !== 'number') e.t = parseFloat(e.t);
+            if (typeof e.C !== 'number') e.C = parseFloat(e.C);
+        }
+
         this.data.sort((a: DustColumnDataPoint, b: DustColumnDataPoint) => {
             return a.t - b.t;
         });
+        // remove duplicates and outsiders
+        let uniq: DustColumnDataPoint[] = [];
+        let last = -1;
+        for (let e of this.data) {
+            if (e.t < 0) continue;
+            if (e.t > 59) continue;
+            if (e.t == last) continue;
+            last = e.t;
+            uniq.push(e);
+        }
+        this.data = uniq;
 
+        console.log(this.data.length);
         let j = 0;
         for (let i = 0; i <= MaxSeconds; i++) {
             let t = i;
+            let a = this.data[j].clone();
+            let b = this.data[j+1].clone();
             if (j == 0 && this.data[j].t > t) {
-                points[i].copy(this.data[j]);
-            } else if (j == this.data.length - 1 && this.data[j].t < t) {
-                points[i].copy(this.data[j]);
+                points[i].t = t;
+                points[i].C = a.C;
+                console.log('pre: ', j, points[i]);
+            } else if (j == this.data.length - 1 && b.t <= t) {
+                points[i].t = t;
+                points[i].C = b.C;
+                console.log('post: ', j, points[i]);
             } else {
-                // skip forward until we have the right two samples
-                let a = this.data[j].clone();
-                let b = this.data[j+1].clone();
+                // skip forward until we have the right two samples    
                 while (j < this.data.length - 2 && b.t < t) {
                     j++;
-                    if (j <= this.data.length - 2) break;
                     a = this.data[j].clone();
                     b = this.data[j+1].clone();
+                    if (j >= this.data.length - 2) break;
                 }
-                let dt = b.t - a.t;
-                let dC = b.C - a.C;
-                let slope = dC / dt;
-                let delta = t - a.t;
-                points[i].t = t;
-                points[i].C = a.C + delta * slope;
+                if (b.t >= t) {
+                    let dt = b.t - a.t;
+                    let dC = b.C - a.C;
+                    let slope = dC / dt;
+                    let delta = t - a.t;
+                    points[i].t = t;
+                    points[i].C = a.C + delta * slope;    
+                } else {
+                    points[i].t = t;
+                    points[i].C = b.C;
+                }
+                console.log('lerp: ', j, points[i]);
             }
         }
         this.data = points;
