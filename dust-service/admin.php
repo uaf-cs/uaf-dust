@@ -5,6 +5,20 @@
 
     include './dustdb.php';
 
+    $filedb = new PDO('sqlite:dust.sqlite3');
+    if (!$filedb) {
+        $db = new DustDB();
+        if (!$db) {
+            echo "Unable to open database!";
+            http_response_code(404);
+            die($db->lastErrorMsg());
+        } else {
+            echo "Created database successfully";
+        }
+        $db->createDatabase();
+        $filedb = new PDO('sqlite:dust.sqlite3');
+    }
+
     class RequestResponse {
         function __construct() {
             $this->request = '';

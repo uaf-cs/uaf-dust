@@ -1,33 +1,12 @@
 <?php
-    header("Access-Control-Allow-Origin: *");
-    header('Content-Type: application/json');
-
+    header('Access-Control-Allow-Origin: *');
     include 'dustdb.php';
 
-    $filedb = new PDO('sqlite:dust.sqlite3');
-    if (!$filedb) {
-        $db = new DustDB();
-        if (!$db) {
-            echo "Unable to open database!";
-            http_response_code(404);
-            die($db->lastErrorMsg());
-        } else {
-            echo "Created database successfully";
-        }
-        $db->createDatabase();
-        $filedb = new PDO('sqlite:dust.sqlite3');
-    }
-
-    if (!$filedb) {
-        echo "Unable to open database!";
-        http_response_code(404);
-        die($db->lastErrorMsg());
-    } else {
-        //echo "Opened database successfully";
-    }
     $db = new DustDB();
-
-    // echo "Opened database successfully";
+    if (!$db) {
+        http_response_code(404);
+        die(json_encode($db->lastErrorMsg()));
+    }
 
     // This came from https://www.leaseweb.com/labs/2015/10/creating-a-simple-rest-api-in-php/
     // under an MIT License.
@@ -48,43 +27,44 @@
         exit(0);
     }
 
-    // echo "<br>METHOD ";
-    // var_dump($method);
-    // echo "<br>REQUEST ";
-    // var_dump($request);
-    // echo "<br>INPUT ";
-    // var_dump($input);
+    header('Content-Type: application/json');
 
     $table = preg_replace('/[^a-z0-9_]+/i', '', array_shift($request));
     $key = array_shift($request) + 0;
 
-    $columns = preg_replace('/[^a-z0-9_]+/i', '', array_keys($input));
-    $values = array_map(function ($key, $value) {
-        if ($value === null) return null;
-        if ($key == 'data') return '\'' . json_encode($value) . '\'';
-        return '"' . (string)SQLite3::escapeString($value) . '"';
-    }, $columns, array_values($input));
-
-    // build the SET part of the SQL command
     $set = '';
-    for ($i = 0; $i < count($columns); $i++) {
-        $set .= ($i > 0 ? ',':'') . '`' . $columns[$i] . '`=';
-        $set .= ($values[$i] === null) ? 'NULL' : $values[$i];
-    }
+    $vstr = '';
 
-    $vstr = '(';
-    for ($i = 0; $i < count($columns); $i++) {
-        $vstr .= ($i > 0 ? ', ': '') . '`' . $columns[$i] . '`';
-    }
-    $vstr .= ') VALUES (';
-    for ($i = 0; $i < count($columns); $i++) {
-        $vstr .= ($i > 0 ? ', ': '');
-        $vstr .= ($values[$i] === null) ? 'NULL' : $values[$i];
-    }
-    $vstr .= ')';
+    if (is_array($input)) {
+        $columns = preg_replace('/[^a-z0-9_]+/i', '', array_keys($input));
+        $values = array_map(function ($key, $value) {
+            if ($value === null) return null;
+            if ($key == 'data') return '\'' . json_encode($value) . '\'';
+            return '"' . (string)SQLite3::escapeString($value) . '"';
+        }, $columns, array_values($input));    
 
-    // echo "<br>SET ";
-    // var_dump($set);
+        // build the SET part of the UPDATE SQL command for PUT
+        if ($method == 'PUT') {
+            for ($i = 0; $i < count($columns); $i++) {
+                $set .= ($i > 0 ? ',':'') . '`' . $columns[$i] . '`=';
+                $set .= ($values[$i] === null) ? 'NULL' : $values[$i];
+            }    
+        }
+
+        // build the VALUES part of the INSERT SQL command for POST
+        if ($method == 'POST') {
+            $vstr = '(';
+            for ($i = 0; $i < count($columns); $i++) {
+                $vstr .= ($i > 0 ? ', ': '') . '`' . $columns[$i] . '`';
+            }
+            $vstr .= ') VALUES (';
+            for ($i = 0; $i < count($columns); $i++) {
+                $vstr .= ($i > 0 ? ', ': '');
+                $vstr .= ($values[$i] === null) ? 'NULL' : $values[$i];
+            }
+            $vstr .= ')';    
+        }
+    }
 
     // create SQL based on HTTP method
     switch ($method) {
@@ -102,57 +82,35 @@
             break;
     }
 
+    // $result = $db->query($sql);
+
     if ($method == 'GET')
         $result = $db->query($sql);
     else
         $result = $db->exec($sql);
-
-    $log = "<br/>METHOD: " . $method . " | TABLE: " . $table . " | KEY: " . $key . " | input: " . $fileContents . " | " . $sql . " | " . $db->lastErrorMsg();
-    $date = date('m/d/Y h:i:s a', time());
-    $db->exec("INSERT INTO log (dtg, log) VALUES ('${date}', '${log}');");
 
     if (!$result) {
         http_response_code(404);
         die(json_encode($db->lastErrorMsg()));
     }
 
-    // // Redo query if not a GET request
-    // if ($method == 'GET') {
-    //     $sql = "SELECT * FROM `$table`" . ($key ? " WHERE id=$key" : '');
-    //     $result = $db->query($sql);
-    
-    //     if (!$key) echo '[';
-    //     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-    //         echo json_encode($row);
-    //     }
-    //     if (!$key) echo ']';      
-    // }
+    $log = "<br/>METHOD: " . $method . " | TABLE: " . $table . " | KEY: " . $key . " | input: " . $fileContents . " | " . SQLite3::escapeString($sql) . " | " . $db->lastErrorMsg();
+    $date = date('m/d/Y h:i:s a', time());
+    $db->exec("INSERT INTO log (dtg, log) VALUES ('${date}', '${log}');");
 
-    // // echo "<br>RESULTS";
-    if ($method == 'GET' || $method == 'PUT') {
-        if (!$key) echo '[';
-        $i = 0;
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-            if ($i++ != 0) echo ", ";
-            if (array_key_exists('data', $row)) {
-                $row['data'] = json_decode($row['data']);
-            }
-            echo json_encode($row);
-        }
-        if (!$key) echo ']';
-    } else if ($method == 'POST') {
-        if (!$key) echo '[';
-        $i = 0;
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-            if ($i++ != 0) echo ", ";
-            if (array_key_exists('data', $row)) {
-                echo $row['data'];
-            } else {
-                echo json_encode($row);
-            }
-        }
-        if (!$key) echo ']';        
-    } else {
-        // update/delete record
+    // requery if not a GET
+    if ($method != 'GET') {
+        $sql = "SELECT * FROM `$table`" . ($key ? " WHERE id=$key" : '');
+        $result = $db->query($sql);
     }
+    if (!$key) echo '[';
+    $i = 0;
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        if ($i++ != 0) echo ", ";
+        if (array_key_exists('data', $row)) {
+            $row['data'] = json_decode($row['data']);
+        }
+        echo json_encode($row);
+    }
+    if (!$key) echo ']';
 ?>

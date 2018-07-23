@@ -13,7 +13,12 @@
     <label>MPRT <span style="font-family: serif;">&tau;</span> Graph</label>
     <button *ngIf="!graphVisible" (click)="showGraph()">show</button>
     <button *ngIf="graphVisible" (click)="hideGraph()">hide</button>
-    <div id="mprtGraphDiv" *ngIf="graphVisible">Graph goes here!</div>
+    <button *ngIf="graphVisible" (click)="plotGraph()">plot</button>
+    <button *ngIf="graphVisible" (click)="clean()">clean</button>
+    <button *ngIf="graphVisible" (click)="calcMPRT()">calc mprt</button>
+    <div *ngIf="graphVisible">
+      <div id="mprtGraphDiv"></div>
+    </div>
   </div>
 
   <div class="dataPointList">
@@ -32,6 +37,7 @@
     </table>
   </div>
 
+  <h2>Edit Details</h2>
   <div><label>Short Name:</label><input [(ngModel)]="palliative.shortname" placeholder="shortname"/></div>
   <div><label>Long Name:</label><input [(ngModel)]="palliative.longname" placeholder="longname"/></div>
   <div><label>Description:</label><input [(ngModel)]="palliative.description" placeholder="description"/></div>
@@ -40,16 +46,16 @@
   <button (click)="save()">save</button>
   <button (blick)="cancel()">close</button>
 
-    <div class="dataPointList padded">
-      <h3>Data Points</h3>
-      <table>
-        <tr><th>t</th><th>C</th></tr>
-        <tr *ngFor="let dp of palliative.data" class="dataPoint">
-          <td><input [(ngModel)]="dp.t"/></td>
-          <td><input [(ngModel)]="dp.C"/></td>
-        </tr>
-      </table>
-      <button (click)="addDatapoint()">add datapoint</button>
-    </div>
+  <div class="dataPointList padded">
+    <h3>Data Points</h3>
+    <table>
+      <tr><th>t</th><th>C</th></tr>
+      <tr *ngFor="let dp of palliative.data" class="dataPoint">
+        <td><input [(ngModel)]="dp.t"/></td>
+        <td><input [(ngModel)]="dp.C"/></td>
+      </tr>
+    </table>
+    <button (click)="addDatapoint()">add datapoint</button>
+  </div>
 
 </div>

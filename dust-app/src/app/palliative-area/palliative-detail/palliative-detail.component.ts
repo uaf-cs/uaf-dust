@@ -5,6 +5,8 @@ import { Palliative } from '../palliative';
 import { PalliativeService } from '../palliative.service';
 import { User } from '../../user-area/user';
 import { UserService } from '../../user-area/user.service';
+// import * as Plotly from 'plotly.js';
+declare var Plotly: any;
 
 @Component({
   selector: 'app-palliative-detail',
@@ -80,6 +82,45 @@ export class PalliativeDetailComponent implements OnInit {
   }
 
   hideGraph() {
-    this.graphVisible = false;
+    this.graphVisible = false;    
+  }
+
+  plotGraph() {
+    if (!this.graphVisible)
+      return;
+    let e = <HTMLDivElement>document.getElementById('mprtGraphDiv');
+    let trace1 = {
+      x: [],
+      y: [],
+      mode: 'lines',
+      type: 'scatter'
+    };
+
+    for (let element of this.palliative.data) {
+      trace1.x.push(element.t);
+      trace1.y.push(element.C);
+    }
+
+    let data = [trace1];
+
+    let layout = {
+      xaxis: {
+        title: 'time (t)'
+      },
+      yaxis: {
+        title: 'Concentration (C)'
+      },
+      title: 'Mean Particle Residence Time'
+    };
+
+    Plotly.plot(e, data, layout);
+  }
+
+  calcMPRT() {
+    this.palliative.mprt = 1.0;
+  }
+
+  clean() {
+    this.palliative.cleanData();
   }
 }

@@ -14,7 +14,7 @@ import { UserService } from '../user.service';
 export class UserDetailComponent implements OnInit {
   @Input() user: User;
   user$: Observable<User>;
-  user: User;
+  // user: User;
 
   constructor(
     private route: ActivatedRoute,
