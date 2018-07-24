@@ -123,6 +123,7 @@ export class PalliativeDetailComponent implements OnInit {
       p.data.push(new DustColumnDataPoint(value.t, value.C));
     }
     p.calcMPRT();
+    this.palliative.data = p.data;
     this.palliative.mprt = p.mprt;
     this.palliative.mprtTime = p.mprtTime;
   }

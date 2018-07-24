@@ -1,9 +1,19 @@
 
 export class DustColumnDataPoint {
+
     constructor(
         public t: number = 0,   // time in seconds
         public C: number = 0    // concentration in PM10 (coarse particles between 2.5 and 10 micrometers in diameter)
     ) { }
+
+    lnC = 0;
+    slope = 0;
+    intercept = 0;
+    deriv1 = 0;
+    deriv2 = 0;
+    dCdt = 0;
+    rsq = 0;
+    tau = 0;
 
     clone(): DustColumnDataPoint {
         return new DustColumnDataPoint(this.t, this.C);
@@ -23,28 +33,23 @@ export class DustColumnDataPoint {
     }
 }
 
-class MPRTPoint {
-    lnC = 0;
-    sum = 0;
-    count = 0;
-    mean = 0;
-    S_xx = 0;
-    S_xy = 0;
-    slope = 0;
-    intercept = 0;
-    deriv1 = 0;
-    deriv2 = 0;
-    dCdt = 0;
-    rsq = 0;
-    tau = 0;
+// class MPRTPoint {
+//     lnC = 0;
+//     slope = 0;
+//     intercept = 0;
+//     deriv1 = 0;
+//     deriv2 = 0;
+//     dCdt = 0;
+//     rsq = 0;
+//     tau = 0;
 
-    constructor(
-        public t: number = 0,
-        public C: number = 0
-    ) {
-        this.lnC = Math.log(C);
-    }
-}
+//     constructor(
+//         public t: number = 0,
+//         public C: number = 0
+//     ) {
+//         this.lnC = Math.log(C);
+//     }
+// }
 
 function mean(Xs: number[]): number {
     let a = 0;
@@ -194,10 +199,10 @@ export class Palliative {
     calcMPRT() {
         const MaxSeconds = 59;
 
-        let points: MPRTPoint[] = [];
+        // let points: DustColumnDataPoint[] = [];
         let i = 0;
         for (let p of this.data) {
-            points.push(new MPRTPoint(p.t, p.C));
+            // points.push(new DustColumnDataPoint(p.t, p.C));
             if (p.t != i) break;
             i++;
         }
@@ -212,7 +217,8 @@ export class Palliative {
         let knownYs: number[] = [];
         let foundTau = false;
         for (let i = 0; i <= MaxSeconds; i++) {
-            let p = points[i];
+            let p = this.data[i];
+            p.lnC = Math.log(p.C);
             knownXs.push(p.t);
             knownYs.push(p.lnC);
             p.slope = regressionSlope(knownYs, knownXs);

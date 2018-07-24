@@ -30,10 +30,14 @@
     
     <table *ngIf="dataVisible">
       <tbody class="altcolors">
-      <tr><th>t</th><th>C</th></tr>
+      <tr><th>t</th><th>C</th><th>ln(C)</th><th>C'(t)</th><th>C''(t)</th><th>R^2</th></tr>
       <tr *ngFor="let dp of palliative.data" class="dataPoint">
         <td>{{dp.t}}</td>
         <td>{{dp.C}}</td>
+        <td>{{dp.lnC}}</td>
+        <td>{{dp.dCdt}}</td>
+        <td>{{dp.deriv2}}</td>
+        <td>{{dp.rsq}}</td>
       </tr>
     </tbody>
     </table>
