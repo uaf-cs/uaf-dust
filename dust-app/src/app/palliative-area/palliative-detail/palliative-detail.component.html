@@ -6,7 +6,9 @@
     <tr><td><label>id:</label></td><td class="description">{{palliative.id}}</td></tr>
     <tr><td><label>Description:</label></td><td class="description">{{palliative.description}}</td></tr>
     <tr><td><label>userid:</label></td><td>{{palliative.userid}}<div *ngIf="user"><span> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></div></td></tr>
-    <tr><td><label>mprt <span style="font-family: serif;">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr></tbody>
+    <tr><td><label>mprt <span style="font-family: serif;">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr>
+    <tr><td><label>mprt <span style="font-family: serif; font-style: italic;">t</span></label></td><td>{{palliative.mprtTime}}</td></tr>
+  </tbody>
   </table>
 
   <div class="mprtGraph">
@@ -14,7 +16,7 @@
     <button *ngIf="!graphVisible" (click)="showGraph()">show</button>
     <button *ngIf="graphVisible" (click)="hideGraph()">hide</button>
     <button *ngIf="graphVisible" (click)="plotGraph()">plot</button>
-    <button *ngIf="graphVisible" (click)="clean()">clean</button>
+    <button *ngIf="graphVisible" (click)="cleanData()">clean</button>
     <button *ngIf="graphVisible" (click)="calcMPRT()">calc mprt</button>
     <div *ngIf="graphVisible">
       <div id="mprtGraphDiv"></div>
@@ -56,6 +58,8 @@
       </tr>
     </table>
     <button (click)="addDatapoint()">add datapoint</button>
+    <br/><textarea [(ngModel)]="textboxText" cols="40" rows="10">{{textboxText}}</textarea>
+    <br/><button (click)="importCSV()">import CSV</button>
   </div>
 
 </div>

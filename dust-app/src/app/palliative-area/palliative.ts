@@ -23,6 +23,98 @@ export class DustColumnDataPoint {
     }
 }
 
+class MPRTPoint {
+    lnC = 0;
+    sum = 0;
+    count = 0;
+    mean = 0;
+    S_xx = 0;
+    S_xy = 0;
+    slope = 0;
+    intercept = 0;
+    deriv1 = 0;
+    deriv2 = 0;
+    dCdt = 0;
+    rsq = 0;
+    tau = 0;
+
+    constructor(
+        public t: number = 0,
+        public C: number = 0
+    ) {
+        this.lnC = Math.log(C);
+    }
+}
+
+function mean(Xs: number[]): number {
+    let a = 0;
+    for (let x of Xs) a += x;
+    return a / Xs.length;
+}
+
+function regressionSlope(knownYs: number[], knownXs: number[]): number {
+    if (knownXs.length != knownYs.length) return 0.0;
+    if (knownXs.length < 1) return 0.0;
+    let count = knownXs.length;
+
+    let meanX = mean(knownXs);
+    let meanY = mean(knownYs);
+
+    let num = 0;
+    let den = 0;
+    for (let i = 0; i < count; i++) {
+        let x = knownXs[i];
+        let y = knownYs[i];
+        num += (x - meanX) * (y - meanY);
+        den += (x - meanX) * (x - meanX);
+    }
+
+    return num / den;
+}
+
+function regressionIntercept(knownYs: number[], knownXs: number[]): number {
+    if (knownXs.length != knownYs.length) return 0.0;
+    if (knownXs.length < 1) return 0.0;
+    let count = knownXs.length;
+
+    let meanX = mean(knownXs);
+    let meanY = mean(knownYs);
+
+    let num = 0;
+    let den = 0;
+    for (let i = 0; i < count; i++) {
+        let x = knownXs[i];
+        let y = knownYs[i];
+        num += (x - meanX) * (y - meanY);
+        den += (x - meanX) * (x - meanX);
+    }
+    let b = num / den;
+
+    return meanY - b * meanX;
+}
+
+// Pearson product-moment correlation coefficient
+function RSQ(knownYs: number[], knownXs: number[]): number {
+    if (knownXs.length != knownYs.length) return 0.0;
+    if (knownXs.length < 1) return 0.0;
+    let count = knownXs.length;
+
+    let meanX = mean(knownXs);
+    let meanY = mean(knownYs);
+
+    let num = 0;
+    let denx = 0;
+    let deny = 0;
+    for (let i = 0; i < count; i++) {
+        let x = knownXs[i];
+        let y = knownYs[i];
+        num += (x - meanX) * (y - meanY);
+        denx += (x - meanX) * (x - meanX);
+        deny += (y - meanY) * (y - meanY);
+    }
+    return num / Math.sqrt(denx * deny);
+}
+
 export class Palliative {
     id: number;
     userid: number;
@@ -31,6 +123,7 @@ export class Palliative {
     description: string;
     data: DustColumnDataPoint[] = [];
     mprt: number;
+    mprtTime: number;
 
     cleanData() {
         let points: DustColumnDataPoint[] = [];
@@ -64,7 +157,7 @@ export class Palliative {
         for (let i = 0; i <= MaxSeconds; i++) {
             let t = i;
             let a = this.data[j].clone();
-            let b = this.data[j+1].clone();
+            let b = this.data[j + 1].clone();
             if (j == 0 && this.data[j].t > t) {
                 points[i].t = t;
                 points[i].C = a.C;
@@ -78,7 +171,7 @@ export class Palliative {
                 while (j < this.data.length - 2 && b.t < t) {
                     j++;
                     a = this.data[j].clone();
-                    b = this.data[j+1].clone();
+                    b = this.data[j + 1].clone();
                     if (j >= this.data.length - 2) break;
                 }
                 if (b.t >= t) {
@@ -87,7 +180,7 @@ export class Palliative {
                     let slope = dC / dt;
                     let delta = t - a.t;
                     points[i].t = t;
-                    points[i].C = a.C + delta * slope;    
+                    points[i].C = a.C + delta * slope;
                 } else {
                     points[i].t = t;
                     points[i].C = b.C;
@@ -96,5 +189,85 @@ export class Palliative {
             }
         }
         this.data = points;
+    }
+
+    calcMPRT() {
+        const MaxSeconds = 59;
+
+        let points: MPRTPoint[] = [];
+        let i = 0;
+        for (let p of this.data) {
+            points.push(new MPRTPoint(p.t, p.C));
+            if (p.t != i) break;
+            i++;
+        }
+
+        this.mprt = -1;
+        this.mprtTime = -1;
+        if (i != 60) {
+            return false;
+        }
+
+        let knownXs: number[] = [];
+        let knownYs: number[] = [];
+        let foundTau = false;
+        for (let i = 0; i <= MaxSeconds; i++) {
+            let p = points[i];
+            knownXs.push(p.t);
+            knownYs.push(p.lnC);
+            p.slope = regressionSlope(knownYs, knownXs);
+            p.intercept = regressionIntercept(knownYs, knownXs);
+            p.deriv1 = Math.abs(Math.exp(p.intercept) * p.slope * Math.exp(p.slope * 0));
+            p.deriv2 = p.deriv1 * Math.abs(p.slope * Math.exp(p.slope * p.t));
+            p.dCdt = Math.abs(Math.exp(p.intercept) * p.slope * Math.exp(p.slope * p.t));
+            p.rsq = Math.pow(RSQ(knownYs, knownXs), 2);
+            p.tau = Math.abs(1 / p.slope);
+
+            if (i < 6) continue;
+
+            // 0.001 mg/m^3/s^2
+            if (!foundTau && p.deriv2 < 0.001) {
+                this.mprt = p.tau;
+                this.mprtTime = p.t;
+                foundTau = true;
+            }
+        }
+
+        return true;
+    }
+
+    importFromCSV(data: string) {
+        // split using regex any sequence of 1 or more newlines or carriage returns
+        let splitLines: string[][] = [];
+        let lines = data.split(/[\n\r]+/);
+        for (let line of lines) {
+            // split with either white space or commas
+            let unfilteredTokens = line.split(/[,\s]+/);
+            if (unfilteredTokens.length > 0 && unfilteredTokens[0][0] == '#') continue;
+            let tokens: string[] = [];
+            for (let t of unfilteredTokens) {
+                if (t.length > 0) {
+                    tokens.push(t);
+                }
+            }
+            if (tokens.length == 0) {
+                continue;
+            }
+
+            splitLines.push(tokens);
+        }
+
+        // tokens should be numbers t and then C
+        // we skip every line when the first two tokens are not numbers
+        let i = 0;
+        this.data = [];
+        for (let line of splitLines) {
+            if (line.length >= 2) {
+                let t = +line[0];
+                let C = +line[1];
+                if (isNaN(t) || isNaN(C)) continue;
+                this.data.push(new DustColumnDataPoint(t, C));
+            }
+        }
     }
 }

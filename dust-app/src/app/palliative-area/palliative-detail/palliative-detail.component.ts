@@ -18,6 +18,7 @@ export class PalliativeDetailComponent implements OnInit {
   @Input() user: User;
   dataVisible = false;
   graphVisible = true;
+  textboxText = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -49,7 +50,7 @@ export class PalliativeDetailComponent implements OnInit {
     if (!(this.palliative.data instanceof Array)) {
       this.palliative.data = [];
     }
-    this.palliative.data.push({ t: 0, C: 0 });
+    this.palliative.data.push(new DustColumnDataPoint());
   }
 
   save(): void {
@@ -117,15 +118,27 @@ export class PalliativeDetailComponent implements OnInit {
   }
 
   calcMPRT() {
-    this.palliative.mprt = 1.0;
+    let p = new Palliative();
+    for (let value of this.palliative.data) {
+      p.data.push(new DustColumnDataPoint(value.t, value.C));
+    }
+    p.calcMPRT();
+    this.palliative.mprt = p.mprt;
+    this.palliative.mprtTime = p.mprtTime;
   }
 
-  clean() {
+  cleanData() {
     let p = new Palliative();
     for (let value of this.palliative.data) {
       p.data.push(new DustColumnDataPoint(value.t, value.C));
     }
     p.cleanData();
+    this.palliative.data = p.data;
+  }
+
+  importCSV() {
+    let p = new Palliative();
+    p.importFromCSV(this.textboxText);
     this.palliative.data = p.data;
   }
 }
