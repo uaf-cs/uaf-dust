@@ -57,6 +57,11 @@ function mean(Xs: number[]): number {
     return a / Xs.length;
 }
 
+/**
+ * Calculate the slope of the linear regression line.
+ * @param knownYs 
+ * @param knownXs 
+ */
 function regressionSlope(knownYs: number[], knownXs: number[]): number {
     if (knownXs.length != knownYs.length) return 0.0;
     if (knownXs.length < 1) return 0.0;
