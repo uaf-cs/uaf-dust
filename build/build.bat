@@ -1,4 +1,4 @@
-@ECHO OFF
+REM @ECHO OFF
 cd ../dust-app
 ng build
 copy dist/dust-app/* ..
