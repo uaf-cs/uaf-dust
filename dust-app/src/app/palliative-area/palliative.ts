@@ -177,8 +177,10 @@ export class Palliative {
         p.longname = palliative.longname;
         p.description = palliative.description;
         p.data = [];
-        for (let dcp of palliative.data) {
-            p.data.push(DustColumnDataPoint.createFromJSON(dcp));
+        if (palliative.data) {
+            for (let dcp of palliative.data) {
+                p.data.push(DustColumnDataPoint.createFromJSON(dcp));
+            }    
         }
         p.mprt = palliative.mprt;
         p.mprtTime = palliative.mprtTime;

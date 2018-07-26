@@ -13,12 +13,17 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class PalliativeService {
-  private serviceUrl = 'http://localhost:8000/dust.php/palliatives';
+  private serviceUrl = '/dust.php/palliatives';
 
   constructor(
     private http: HttpClient,
     private messageService: MessageService
-  ) { }
+  ) {
+    let url: string = window.location.href;
+    if (url.search(/localhost/)) {
+      this.serviceUrl = 'http://localhost:8000' + this.serviceUrl;
+    }
+  }
 
   getPalliative(id: number): Observable<Palliative> {
     const url = `${this.serviceUrl}/${id}`;

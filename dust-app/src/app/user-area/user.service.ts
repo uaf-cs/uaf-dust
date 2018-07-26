@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router, UrlHandlingStrategy } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -14,19 +15,26 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserService {
-  private usersUrl = 'http://localhost:8000/dust.php/users';
+  private serviceUrl = '/dust.php/users';
   lastUserId = 0;
 
   constructor(
     private http: HttpClient,
-    private messageService: MessageService) { }
+    private messageService: MessageService,
+    private router: Router
+  ) {
+    let url: string = window.location.href;
+    if (url.search(/localhost/)) {
+      this.serviceUrl = 'http://localhost:8000' + this.serviceUrl;
+    }
+  }
 
   getUser(id: number): Observable<User> {
     // this.messageService.add(`UserService: fetched user id = ${id}`);
     // return of(USERS.find(user => user.id === id));
 
     this.lastUserId = id;
-    const url = `${this.usersUrl}/${id}`;
+    const url = `${this.serviceUrl}/${id}`;
     return this.http.get<User>(url).pipe(
       tap(_ => this.log(`fetched user id=${id}`)),
       catchError(this.handleError<User>(`getUser id=${id}`))
@@ -36,7 +44,7 @@ export class UserService {
   getUsers(): Observable<User[]> {
     // this.messageService.add('UserService: fetched users');
     // return of(USERS);
-    return this.http.get<User[]>(this.usersUrl)
+    return this.http.get<User[]>(this.serviceUrl)
       .pipe(
         tap(users => this.log('fetched users')),
         catchError(this.handleError('getUsers', []))
@@ -45,7 +53,7 @@ export class UserService {
 
   /** PUT: update the user on the server */
   updateUser(user: User): Observable<any> {
-    return this.http.put(this.usersUrl, user, httpOptions).pipe(
+    return this.http.put(this.serviceUrl, user, httpOptions).pipe(
       tap(_ => this.log(`updated user id=${user.id}`)),
       catchError(this.handleError<any>('updateUser'))
     );
@@ -53,7 +61,7 @@ export class UserService {
 
   /** POST: add a new user to the server */
   addUser(user: User): Observable<User> {
-    return this.http.post<User>(this.usersUrl, user, httpOptions).pipe(
+    return this.http.post<User>(this.serviceUrl, user, httpOptions).pipe(
       tap((_user: User) => this.log(`added user w/ id=${_user.id}`)),
       catchError(this.handleError<User>('addUser'))
     );
@@ -62,7 +70,7 @@ export class UserService {
   /** DELETE: delete the user from the server */
   deleteUser(user: User | number): Observable<User> {
     const id = typeof user === 'number' ? user : user.id;
-    const url = `${this.usersUrl}/${id}`;
+    const url = `${this.serviceUrl}/${id}`;
 
     return this.http.delete<User>(url, httpOptions).pipe(
       tap(_ => this.log(`deleted user id=${id}`)),
@@ -76,7 +84,7 @@ export class UserService {
       // if not search term, return empty user array
       return of([]);
     }
-    return this.http.get<User[]>(`${this.usersUrl}/?name=${term}`)
+    return this.http.get<User[]>(`${this.serviceUrl}/?name=${term}`)
       .pipe(
         tap(_ => this.log(`found users matching "${term}"`)),
         catchError(this.handleError<User[]>('searchUsers', []))
