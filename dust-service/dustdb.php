@@ -95,7 +95,7 @@ EOF;
                 email        TEXT);
 
                 CREATE TABLE auth
-                (id         INTEGER PRIMARY KEY,
+                (userid     INTEGER PRIMARY KEY,
                  password   TEXT NOT NULL,
                  flags      INTEGER NOT NULL);
 
@@ -105,13 +105,14 @@ EOF;
 
                 CREATE TABLE palliatives
                 (id         INTEGER PRIMARY KEY AUTOINCREMENT,
-                fkuser      INTEGER,
+                userid      INTEGER,
                 testid      TEXT,
                 shortname   TEXT NOT NULL,
                 longname    TEXT,
                 description TEXT,
                 data        TEXT,
-                mprt        REAL);
+                mprt        REAL,
+                mprtTime    REAL);
 EOF;
             $ret = $this->exec($sql);
             if (!$ret) {

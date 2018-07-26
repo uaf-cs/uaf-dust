@@ -34,12 +34,20 @@ The user information (`users` table) we want to have is:
 The Dust Palliative information (`palliatives` table) we want to have is:
 
 * `id` (Primary key)
-* `userid` (Foreign key)
+* `userid` (Foreign key to `users` table)
+* Test ID (`testid`)
 * Short name (`shortname`)
 * Long name (`longname`)
 * Description (`description`)
-* Data (`rawdata`)
+* Data (`data`)
 * MPRT (`mprt`)
+* MPRT time (`mprtTime`)
+
+The `auth` table is used to authenticate users. The fields are
+
+* `userid` (foreign key to `users` table, one-to-one relationship)
+* `password` (stores a hash to the password)
+* `flags` (stores flags to represent user-level and so on)
 
 ## User management
 
