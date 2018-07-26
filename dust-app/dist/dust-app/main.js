@@ -1417,7 +1417,7 @@ var PalliativeDetailComponent = /** @class */ (function () {
         this.userService = userService;
         this.location = location;
         this.dataVisible = false;
-        this.graphVisible = true;
+        this.graphVisible = false;
         this.textboxText = '';
     }
     PalliativeDetailComponent.prototype.ngOnInit = function () {

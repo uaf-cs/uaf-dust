@@ -17,7 +17,7 @@ export class PalliativeDetailComponent implements OnInit {
   @Input() palliative: Palliative;
   @Input() user: User;
   dataVisible = false;
-  graphVisible = true;
+  graphVisible = false;
   textboxText = '';
 
   constructor(
