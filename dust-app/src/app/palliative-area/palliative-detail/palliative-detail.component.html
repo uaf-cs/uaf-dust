@@ -20,7 +20,11 @@
     <button *ngIf="graphVisible" (click)="cleanData()">clean</button>
     <button *ngIf="graphVisible" (click)="calcMPRT()">calc mprt</button>
     <div *ngIf="graphVisible">
-      <div id="mprtGraphDiv"></div>
+      <div id="mprtGraphC"></div>
+      <div id="mprtGraphLnC"></div>
+      <div id="mprtGraphDeriv1"></div>
+      <div id="mprtGraphDeriv2"></div>
+      <div id="mprtGraphRSQ"></div>
     </div>
   </div>
 
@@ -45,6 +49,7 @@
   </div>
 
   <h2>Edit Details</h2>
+  <div><label>Test ID:</label><input [(ngModel)]="palliative.testid" placeholder="testid"/></div>
   <div><label>Short Name:</label><input [(ngModel)]="palliative.shortname" placeholder="shortname"/></div>
   <div><label>Long Name:</label><input [(ngModel)]="palliative.longname" placeholder="longname"/></div>
   <div><label>Description:</label><input [(ngModel)]="palliative.description" placeholder="description"/></div>

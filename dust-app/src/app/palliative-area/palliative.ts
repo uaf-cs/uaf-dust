@@ -1,4 +1,23 @@
 
+export enum DustColumnGraphType {
+    Concentration,
+    LnC,
+    dCdt,
+    Deriv1,
+    Deriv2,
+    RSQ
+}
+
+export class DustColumnGraph {
+    x: number[] = [];
+    y: number[] = [];
+
+    constructor(
+        public mode: string = 'lines',
+        public type: string = 'scatter'
+    ) { }
+}
+
 export class DustColumnDataPoint {
 
     constructor(
@@ -23,6 +42,21 @@ export class DustColumnDataPoint {
         this.t = v.t;
         this.C = v.C;
         return this;
+    }
+
+    static createFromJSON(json: any): DustColumnDataPoint {
+        let p = new DustColumnDataPoint();
+        p.t = json.t;
+        p.C = json.C;
+        p.lnC = json.lnC;
+        p.slope = json.slope;
+        p.intercept = json.intercept;
+        p.deriv1 = json.deriv1;
+        p.deriv2 = json.deriv2;
+        p.dCdt = json.dCdt;
+        p.rsq = json.rsq;
+        p.tau = json.tau;
+        return p;
     }
 
     static lerp(a: DustColumnDataPoint, b: DustColumnDataPoint, x: number) {
@@ -130,6 +164,22 @@ export class Palliative {
     mprt: number;
     mprtTime: number;
 
+    static CreateFromJSON(palliative: any): Palliative {
+        let p = new Palliative();
+        p.id = palliative.id;
+        p.userid = palliative.userid;
+        p.shortname = palliative.shortname;
+        p.longname = palliative.longname;
+        p.description = palliative.description;
+        p.data = [];
+        for (let dcp of palliative.data) {
+            p.data.push(DustColumnDataPoint.createFromJSON(dcp));
+        }
+        p.mprt = palliative.mprt;
+        p.mprtTime = palliative.mprtTime;
+        return p;
+    }
+
     cleanData() {
         let points: DustColumnDataPoint[] = [];
         const MaxSeconds = 59;
@@ -199,10 +249,8 @@ export class Palliative {
     calcMPRT() {
         const MaxSeconds = 59;
 
-        // let points: DustColumnDataPoint[] = [];
         let i = 0;
         for (let p of this.data) {
-            // points.push(new DustColumnDataPoint(p.t, p.C));
             if (p.t != i) break;
             i++;
         }
@@ -223,7 +271,7 @@ export class Palliative {
             knownYs.push(p.lnC);
             p.slope = regressionSlope(knownYs, knownXs);
             p.intercept = regressionIntercept(knownYs, knownXs);
-            p.deriv1 = Math.abs(Math.exp(p.intercept) * p.slope * Math.exp(p.slope * 0));
+            p.deriv1 = Math.abs(Math.exp(p.intercept) * p.slope);
             p.deriv2 = p.deriv1 * Math.abs(p.slope * Math.exp(p.slope * p.t));
             p.dCdt = Math.abs(Math.exp(p.intercept) * p.slope * Math.exp(p.slope * p.t));
             p.rsq = Math.pow(RSQ(knownYs, knownXs), 2);
@@ -275,5 +323,100 @@ export class Palliative {
                 this.data.push(new DustColumnDataPoint(t, C));
             }
         }
+    }
+
+    getXYs(whichType: DustColumnGraphType, mode: string = 'lines', type: string = 'scatter'): DustColumnGraph[] {
+        let dcgd = new DustColumnGraph(mode, type);
+        for (let p of this.data) {
+            let x = p.t;
+            let y = 0;
+            switch (whichType) {
+                case DustColumnGraphType.Concentration:
+                    y = p.C;
+                    break;
+                case DustColumnGraphType.LnC:
+                    y = p.lnC;
+                    break;
+                case DustColumnGraphType.Deriv1:
+                    y = p.deriv1;
+                    break;
+                case DustColumnGraphType.Deriv2:
+                    y = p.deriv2;
+                    break;
+                case DustColumnGraphType.dCdt:
+                    y = p.dCdt;
+                    break;
+                case DustColumnGraphType.RSQ:
+                    y = p.rsq;
+                    break;
+                default:
+                    y = 0;
+            }
+            dcgd.x.push(x);
+            dcgd.y.push(y);
+        }
+        let linearRegression = new DustColumnGraph(mode, type);
+        if (whichType == DustColumnGraphType.LnC) {
+            let slope = 0;
+            let intercept = 0;
+            for (let i = 0; i <= this.data.length; i++) {
+                if (this.data[i].t > this.mprtTime) break;
+                slope = this.data[i].slope;
+                intercept = this.data[i].intercept;
+            }
+            for (let i = 0; i <= this.data.length; i++) {
+                if (this.data[i].t > this.mprtTime) break;
+                linearRegression.x.push(this.data[i].t);
+                linearRegression.y.push(intercept + slope * this.data[i].t);
+            }
+            return [dcgd, linearRegression];
+        }
+        return [dcgd];
+    }
+
+    getLayout(whichType: DustColumnGraphType): any {
+        let layout = {
+            xaxis: {
+                title: 'time (t)'
+            },
+            yaxis: {
+                title: 'Concentration (C)'
+            },
+            title: 'Mean Particle Residence Time'
+        };
+
+        switch (whichType) {
+            case DustColumnGraphType.Concentration:
+                layout.xaxis.title = 'Time (s)';
+                layout.yaxis.title = 'Concentration (mg/m³)';
+                layout.title = 'Mean Particle Residence Time τ';
+                break;
+            case DustColumnGraphType.LnC:
+                layout.xaxis.title = 'Time (s)';
+                layout.yaxis.title = 'Ln(C)';
+                layout.title = 'Mean Particle Residence Time τ';
+                break;
+            case DustColumnGraphType.Deriv1:
+                layout.xaxis.title = 'Time (s)';
+                layout.yaxis.title = 'Concentration (mg/m³/s)';
+                layout.title = 'Rate of Change in Concentration';
+                break;
+            case DustColumnGraphType.Deriv2:
+                layout.xaxis.title = 'Time (s)';
+                layout.yaxis.title = 'Concentration (mg/m³/s²)';
+                layout.title = 'Rate of Reduction in Rate of Concentration Change';
+                break;
+            case DustColumnGraphType.dCdt:
+                layout.xaxis.title = 'Time (s)';
+                layout.yaxis.title = 'Concentration (mg/m³/s)';
+                layout.title = 'Rate of Change in Concentration';
+                break;
+            case DustColumnGraphType.RSQ:
+                layout.xaxis.title = 'Time (s)';
+                layout.yaxis.title = 'R²';
+                layout.title = 'R²';
+                break;
+        }
+        return layout;
     }
 }

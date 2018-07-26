@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Palliative, DustColumnDataPoint } from '../palliative';
+import { Palliative, DustColumnDataPoint, DustColumnGraphType } from '../palliative';
 import { PalliativeService } from '../palliative.service';
 import { User } from '../../user-area/user';
 import { UserService } from '../../user-area/user.service';
@@ -80,41 +80,66 @@ export class PalliativeDetailComponent implements OnInit {
 
   showGraph() {
     this.graphVisible = true;
+    setTimeout(() => {
+      if (this.palliative.mprt === null) {
+        this.calcMPRT();
+      }
+      this.plotGraph();
+    }, 500);
   }
 
   hideGraph() {
-    this.graphVisible = false;    
+    this.graphVisible = false;
   }
 
   plotGraph() {
     if (!this.graphVisible)
       return;
-    let e = <HTMLDivElement>document.getElementById('mprtGraphDiv');
-    let trace1 = {
-      x: [],
-      y: [],
-      mode: 'lines',
-      type: 'scatter'
-    };
+    let e: HTMLDivElement;
+    // let trace1 = {
+    //   x: [],
+    //   y: [],
+    //   mode: 'lines',
+    //   type: 'scatter'
+    // };
 
-    for (let element of this.palliative.data) {
-      trace1.x.push(element.t);
-      trace1.y.push(element.C);
+    // for (let element of this.palliative.data) {
+    //   trace1.x.push(element.t);
+    //   trace1.y.push(element.C);
+    // }
+
+    // let xys = this.palliative.getXYs(DustColumnGraphType.Concentration, 'lines', 'scatter');
+    // trace1.x = xys.x;
+    // trace1.y = xys.y;
+    if (!(this.palliative instanceof Palliative)) {
+      this.palliative = Palliative.CreateFromJSON(this.palliative);
     }
 
-    let data = [trace1];
+    let graphs = [
+      { id: 'mprtGraphC', type: DustColumnGraphType.Concentration },
+      { id: 'mprtGraphLnC', type: DustColumnGraphType.LnC },
+      { id: 'mprtGraphDeriv1', type: DustColumnGraphType.dCdt },
+      { id: 'mprtGraphDeriv2', type: DustColumnGraphType.Deriv2 },
+      { id: 'mprtGraphRSQ', type: DustColumnGraphType.RSQ }
+    ];
+    for (let g of graphs) {
+      let data = this.palliative.getXYs(g.type, 'lines', 'scatter');
+      let layout = this.palliative.getLayout(g.type);
+      e = <HTMLDivElement>document.getElementById(g.id);
+      Plotly.plot(e, data, layout);
+    }
 
-    let layout = {
-      xaxis: {
-        title: 'time (t)'
-      },
-      yaxis: {
-        title: 'Concentration (C)'
-      },
-      title: 'Mean Particle Residence Time'
-    };
 
-    Plotly.plot(e, data, layout);
+    // let layout = {
+    //   xaxis: {
+    //     title: 'time (t)'
+    //   },
+    //   yaxis: {
+    //     title: 'Concentration (C)'
+    //   },
+    //   title: 'Mean Particle Residence Time'
+    // };
+
   }
 
   calcMPRT() {
