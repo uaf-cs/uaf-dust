@@ -90,13 +90,13 @@
         $result = $db->exec($sql);
     }
 
-    if (!$result) {
-        $lastErrorMsg = $db->lastErrorMsg();
+    $lastErrorMsg = $db->lastErrorMsg();
     
-        $log = "<br/>METHOD: " . $method . " | TABLE: " . $table . " | KEY: " . $key . " | input: " . $fileContents . " | " . SQLite3::escapeString($sql) . " | " . $db->lastErrorMsg();
-        $date = date('m/d/Y h:i:s a', time());
-        $db->exec("INSERT INTO log (dtg, log) VALUES ('${date}', '${log}');");
-        
+    $log = "<br/>METHOD: " . $method . " | TABLE: " . $table . " | KEY: " . $key . " | input: " . $fileContents . " | " . SQLite3::escapeString($sql) . " | " . $db->lastErrorMsg();
+    $date = date('m/d/Y h:i:s a', time());
+    $db->exec("INSERT INTO log (dtg, log) VALUES ('${date}', '${log}');");
+
+    if (!$result) {
         http_response_code(404);
         die(json_encode($lastErrorMsg));
     }
