@@ -127,7 +127,7 @@ EOF;
                 INSERT INTO users (username, firstname, lastname, organization, email)
                 VALUES ('dmurph', 'Diane', 'Murph', 'UAF', 'jmmurph@alaska.edu');
 
-                INSERT INTO palliatives (fkuser, testid, shortname, longname, description, data, mprt)
+                INSERT INTO palliatives (userid, testid, shortname, longname, description, data, mprt)
                 VALUES (1, 'T-000', 'Water', 'Water', 'A description of water', '[]', 0.0);
 EOF;
             $ret = $this->exec($sql);
