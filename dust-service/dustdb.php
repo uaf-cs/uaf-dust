@@ -52,7 +52,7 @@
     class Palliative {
         function __construct() {
             $this->id = 0;
-            $this->fkuser = 0;
+            $this->userid = 0;
             $this->testid = '';
             $this->shortname = '';
             $this->longname = '';
