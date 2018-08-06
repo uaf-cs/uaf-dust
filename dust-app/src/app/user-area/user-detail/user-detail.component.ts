@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { User } from '../user';
 import { UserService } from '../user.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-user-detail',
@@ -14,29 +15,32 @@ import { UserService } from '../user.service';
 export class UserDetailComponent implements OnInit {
   @Input() user: User;
   user$: Observable<User>;
-  // user: User;
+  theUser: User;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private service: UserService,
-    private location: Location
+    private location: Location,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
     const id = +this.route.snapshot.paramMap.get('id');
     this.user$ = this.service.getUser(id);
+    this.user$.subscribe(user => {
+      this.theUser = user;
+    });
   }
 
   getUser(): void {
     const id = +this.route.snapshot.paramMap.get('id');
-    this.service.getUser(id).subscribe(user => this.user = user);
+    this.service.getUser(id).subscribe(user => this.theUser = user);
   }
 
   save(): void {
-    this.service.updateUser(this.user)
+    this.service.updateUser(this.theUser)
       .subscribe(() => {
-        // this.goBack()
         this.getUser();
       });
   }
@@ -46,7 +50,11 @@ export class UserDetailComponent implements OnInit {
     this.router.navigate(['/users', { id: userId } ]);
   }
 
-  goBack(): void {
-    this.location.back();
+  goBack() {
+    this.router.navigate(['/users', { id: this.theUser.id } ]);
   }
+
+  // goBack(): void {
+  //   this.location.back();
+  // }
 }

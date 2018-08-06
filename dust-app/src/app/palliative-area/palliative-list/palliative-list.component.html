@@ -1,17 +1,17 @@
 <app-palliative-search></app-palliative-search>
 
-<div>
-  <label>Add Palliative:</label>
-    <input #palliativeName />
-  <!-- (click) passes input value to add() and then clears the input -->
-  <button (click)="add(palliativeName.value); palliativeName.value=''">add</button>
+<div *ngIf="authService.isTechnician">
+    <label>Add Palliative</label>&nbsp;
+      <input #palliativeName />
+    <!-- (click) passes input value to add() and then clears the input -->
+    <button (click)="add(palliativeName.value); palliativeName.value=''">add</button>
 </div>
 
 <ul class="items">
   <li *ngFor="let palliative of palliatives">
     <a routerLink="/palliatives/detail/{{palliative.id}}">
     <span class="badge">{{palliative.id}}</span>{{palliative.shortname}}</a>
-    <button class="delete" title="delete palliative" (click)="delete(palliative)">x</button>
+    <button *ngIf="authService.isAdmin" class="delete" title="delete palliative" (click)="delete(palliative)">x</button>
   </li>
 </ul>
 

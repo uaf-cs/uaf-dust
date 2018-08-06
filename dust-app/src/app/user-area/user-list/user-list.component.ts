@@ -5,6 +5,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { User } from '../user';
 import { UserService } from '../user.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-user-list',
@@ -12,24 +13,25 @@ import { UserService } from '../user.service';
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
-  users: User[];
+  theUsers: User[];
   users$: Observable<User[]>;
   private selectedId: number;
 
   constructor(
     private service: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
-    // this.getUsers();
-    this.users$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) => {
-        // + causes the returned string to be converted to a number
-        this.selectedId = +params.get('id');
-        return this.service.getUsers();
-      })
-    );
+    this.getUsers();
+    // this.users$ = this.route.paramMap.pipe(
+    //   switchMap((params: ParamMap) => {
+    //     // + causes the returned string to be converted to a number
+    //     this.selectedId = +params.get('id');
+    //     return this.service.getUsers();
+    //   })
+    // );
   }
 
   add(name: string): void {
@@ -37,17 +39,27 @@ export class UserListComponent implements OnInit {
     if (!name) { return; }
     this.service.addUser({ id: null, username: name } as User)
       .subscribe(user => {
-        this.users.push(user);
+        this.getUsers();
       });
   }
 
   delete(user: User): void {
-    this.users = this.users.filter(h => h !== user);
-    this.service.deleteUser(user).subscribe();
+    this.theUsers = this.theUsers.filter(h => h !== user);
+    this.service.deleteUser(user).subscribe(() => {
+      this.getUsers();
+    });
   }
 
   getUsers(): void {
-    this.service.getUsers().subscribe(users => this.users = users);
+    this.users$ = this.route.paramMap.pipe(
+      switchMap((params: ParamMap) => {
+        // + causes the returned string to be converted to a number
+        this.selectedId = +params.get('id');
+        return this.service.getUsers();
+      })
+    );
+    this.users$.subscribe(users => this.theUsers = users);
+    // this.service.getUsers().subscribe(users => this.theUsers = users);
   }
 }
 

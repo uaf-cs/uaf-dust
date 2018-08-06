@@ -6,8 +6,12 @@
 
 <!-- <app-palliative-list></app-palliative-list> -->
 
-<ul>
-    <li *ngFor="let palliative of palliatives">{{palliative.shortname}}</li>
+<ul class="items">
+    <li *ngFor="let palliative of palliatives">
+        <a routerLink="/palliatives/detail/{{palliative.id}}">
+        <span class="badge">{{palliative.id}} | {{palliative.testid}} | </span>{{palliative.shortname}}</a>
+        <button class="delete" title="delete palliative" (click)="delete(palliative)">x</button>
+    </li>
 </ul>
 </div>
 

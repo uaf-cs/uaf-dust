@@ -1,10 +1,32 @@
 <h2>Manage Users</h2>
 
 <div *ngIf="!users$">Loading...</div>
-<div *ngIf="users$ | async as users">
+<!-- <div *ngIf="users$ | async as users">
     <ul>
         <li *ngFor="let user of users">{{user.username}}</li>
     </ul>
+</div> -->
+
+<div *ngIf="users$">
+    <label>User name:</label>&nbsp;<input #userName />
+    
+    <!-- (click) passes input value to add() and then clears the input -->
+    <button (click)="add(userName.value); userName.value=''">
+        add
+    </button>
+
+    <ul class="items">
+    <li *ngFor="let user of users$ | async"
+    [class.selected]="user.id === selectedId"
+    >
+      <a routerLink="/users/detail/{{user.id}}">
+        <span class="badge">{{user.id}}</span> {{user.username}}</a>
+        <button class="delete" title="delete user"
+        (click)="delete(user)">x</button>
+    </li>
+  </ul>
 </div>
+
+
 <!-- <app-user-list></app-user-list> -->
 <button (click)="gotoDashboard()">Back to dashboard</button>

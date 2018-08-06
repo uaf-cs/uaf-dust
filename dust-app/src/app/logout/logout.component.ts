@@ -30,7 +30,7 @@ export class LogoutComponent implements OnInit {
       // Providing a `null` value to the named outlet
       // clears the contents of the named outlet
       this.router.navigate([{ outlets: { popup: null } }]);
-    }, 1000);
+    }, 500);
   }
 
   gotoDashboard() {

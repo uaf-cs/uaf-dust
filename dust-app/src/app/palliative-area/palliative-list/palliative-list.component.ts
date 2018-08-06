@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Palliative } from '../palliative';
 import { PalliativeService } from '../palliative.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-palliative-list',
@@ -9,10 +10,12 @@ import { PalliativeService } from '../palliative.service';
 })
 export class PalliativeListComponent implements OnInit {
   palliatives: Palliative[];
-
   private selectedId: number;
 
-  constructor(private palliativeService: PalliativeService) { }
+  constructor(
+    private palliativeService: PalliativeService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
     this.getPalliatives();
@@ -23,14 +26,14 @@ export class PalliativeListComponent implements OnInit {
     if (!name) { return; }
     this.palliativeService.addPalliative({ id: null, shortname: name } as Palliative)
       .subscribe(palliative => {
-        // this.palliatives.push(palliative);
         this.getPalliatives();
       });
   }
 
   delete(palliative: Palliative): void {
-    this.palliatives = this.palliatives.filter(h => h !== palliative);
-    this.palliativeService.deletePalliative(palliative).subscribe();
+    this.palliativeService.deletePalliative(palliative).subscribe(() => {
+      this.getPalliatives();
+    });
   }
 
   getPalliatives(): void {

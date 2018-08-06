@@ -1,11 +1,11 @@
 <div id="palliative-search-component">
-<h4>Palliative Search</h4>
 
+  <label>Palliative Search</label>&nbsp;
 <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
 
 <ul class="search-result">
   <li *ngFor="let palliative of palliatives$ | async">
-    <a routerLink="detail/{{palliative.id}}">{{palliative.shortname}}</a>
+    <a routerLink="/palliatives/detail/{{palliative.id}}">{{palliative.shortname}}</a>
   </li>
 </ul>
 </div>

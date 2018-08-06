@@ -30,7 +30,7 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "Admin dashboard...\r\n\r\n<button (click)=\"initializeDB()\">initialize database</button>"
+module.exports = "<!-- Admin dashboard...\r\n\r\n<button (click)=\"initializeDB()\">initialize database</button> -->"
 
 /***/ }),
 
@@ -168,7 +168,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n\r\n<nav>\r\n  <h3>Administration Area</h3>\r\n  <a routerLink=\"./dashboard\" routerLinkActive=\"active\"\r\n    [routerLinkActiveOptions]=\"{ exact: true }\">Dashboard</a>\r\n  <a routerLink=\"./palliatives\" routerLinkActive=\"active\">Manage Palliatives</a>\r\n  <a routerLink=\"./users\" routerLinkActive=\"active\">Manage Users</a>\r\n</nav>\r\n\r\n<app-admin-dashboard></app-admin-dashboard>\r\n\r\n<router-outlet></router-outlet>"
+module.exports = "\r\n\r\n<nav>\r\n  <h1>Administration Area</h1>\r\n  <!-- <a routerLink=\"./dashboard\" routerLinkActive=\"active\"\r\n    [routerLinkActiveOptions]=\"{ exact: true }\">Dashboard</a> -->\r\n  <a routerLink=\"./palliatives\" routerLinkActive=\"active\">Manage Palliatives</a>\r\n  <a routerLink=\"./users\" routerLinkActive=\"active\">Manage Users</a>\r\n</nav>\r\n\r\n<router-outlet></router-outlet>"
 
 /***/ }),
 
@@ -259,7 +259,7 @@ var AdminModule = /** @class */ (function () {
                 _admin_component__WEBPACK_IMPORTED_MODULE_3__["AdminComponent"],
                 _admin_dashboard_component__WEBPACK_IMPORTED_MODULE_4__["AdminDashboardComponent"],
                 _manage_users_component__WEBPACK_IMPORTED_MODULE_5__["ManageUsersComponent"],
-                _manage_palliatives_component__WEBPACK_IMPORTED_MODULE_6__["ManagePalliativesComponent"],
+                _manage_palliatives_component__WEBPACK_IMPORTED_MODULE_6__["ManagePalliativesComponent"]
             ]
         })
     ], AdminModule);
@@ -277,7 +277,7 @@ var AdminModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Manage Palliatives</h2>\r\n\r\n<div *ngIf=\"!palliatives$\">Loading...</div>\r\n\r\n<div *ngIf=\"palliatives$ | async as palliatives\">\r\n\r\n<!-- <app-palliative-list></app-palliative-list> -->\r\n\r\n<ul>\r\n    <li *ngFor=\"let palliative of palliatives\">{{palliative.shortname}}</li>\r\n</ul>\r\n</div>\r\n\r\n\r\n<button (click)=\"gotoDashboard()\">Back to dashboard</button>\r\n"
+module.exports = "<h2>Manage Palliatives</h2>\r\n\r\n<div *ngIf=\"!palliatives$\">Loading...</div>\r\n\r\n<div *ngIf=\"palliatives$ | async as palliatives\">\r\n\r\n<!-- <app-palliative-list></app-palliative-list> -->\r\n\r\n<ul class=\"items\">\r\n    <li *ngFor=\"let palliative of palliatives\">\r\n        <a routerLink=\"/palliatives/detail/{{palliative.id}}\">\r\n        <span class=\"badge\">{{palliative.id}} | {{palliative.testid}} | </span>{{palliative.shortname}}</a>\r\n        <button class=\"delete\" title=\"delete palliative\" (click)=\"delete(palliative)\">x</button>\r\n    </li>\r\n</ul>\r\n</div>\r\n\r\n\r\n<button (click)=\"gotoDashboard()\">Back to dashboard</button>\r\n"
 
 /***/ }),
 
@@ -354,7 +354,7 @@ var ManagePalliativesComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Manage Users</h2>\r\n\r\n<div *ngIf=\"!users$\">Loading...</div>\r\n<div *ngIf=\"users$ | async as users\">\r\n    <ul>\r\n        <li *ngFor=\"let user of users\">{{user.username}}</li>\r\n    </ul>\r\n</div>\r\n<!-- <app-user-list></app-user-list> -->\r\n<button (click)=\"gotoDashboard()\">Back to dashboard</button>"
+module.exports = "<h2>Manage Users</h2>\r\n\r\n<div *ngIf=\"!users$\">Loading...</div>\r\n<!-- <div *ngIf=\"users$ | async as users\">\r\n    <ul>\r\n        <li *ngFor=\"let user of users\">{{user.username}}</li>\r\n    </ul>\r\n</div> -->\r\n\r\n<div *ngIf=\"users$\">\r\n    <label>User name:</label>&nbsp;<input #userName />\r\n    \r\n    <!-- (click) passes input value to add() and then clears the input -->\r\n    <button (click)=\"add(userName.value); userName.value=''\">\r\n        add\r\n    </button>\r\n\r\n    <ul class=\"items\">\r\n    <li *ngFor=\"let user of users$ | async\"\r\n    [class.selected]=\"user.id === selectedId\"\r\n    >\r\n      <a routerLink=\"/users/detail/{{user.id}}\">\r\n        <span class=\"badge\">{{user.id}}</span> {{user.username}}</a>\r\n        <button class=\"delete\" title=\"delete user\"\r\n        (click)=\"delete(user)\">x</button>\r\n    </li>\r\n  </ul>\r\n</div>\r\n\r\n\r\n<!-- <app-user-list></app-user-list> -->\r\n<button (click)=\"gotoDashboard()\">Back to dashboard</button>"
 
 /***/ }),
 
@@ -390,17 +390,41 @@ var ManageUsersComponent = /** @class */ (function () {
         this.service = service;
         this.router = router;
         this.route = route;
+        this.theUsers = [];
         this.selectedId = 0;
     }
     ManageUsersComponent.prototype.ngOnInit = function () {
+        this.getUsers();
+    };
+    ManageUsersComponent.prototype.gotoDashboard = function () {
+        this.router.navigate(['./']);
+    };
+    ManageUsersComponent.prototype.getUsers = function () {
         var _this = this;
         this.users$ = this.route.paramMap.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["switchMap"])(function (params) {
             _this.selectedId = +params.get('id');
             return _this.service.getUsers();
         }));
+        this.users$.subscribe(function (users) { return _this.theUsers = users; });
     };
-    ManageUsersComponent.prototype.gotoDashboard = function () {
-        this.router.navigate(['./']);
+    ManageUsersComponent.prototype.add = function (name) {
+        var _this = this;
+        name = name.trim();
+        if (!name) {
+            return;
+        }
+        this.service.addUser({ id: null, username: name })
+            .subscribe(function (user) {
+            _this.getUsers();
+            _this.selectedId = user.id;
+        });
+    };
+    ManageUsersComponent.prototype.delete = function (user) {
+        var _this = this;
+        this.theUsers = this.theUsers.filter(function (h) { return h !== user; });
+        this.service.deleteUser(user).subscribe(function () {
+            _this.getUsers();
+        });
     };
     ManageUsersComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -466,10 +490,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppRoutingModule", function() { return AppRoutingModule; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
-/* harmony import */ var _dashboard_dashboard_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dashboard/dashboard.component */ "./src/app/dashboard/dashboard.component.ts");
-/* harmony import */ var _not_found_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./not-found.component */ "./src/app/not-found.component.ts");
-/* harmony import */ var _login_login_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./login/login.component */ "./src/app/login/login.component.ts");
-/* harmony import */ var _logout_logout_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./logout/logout.component */ "./src/app/logout/logout.component.ts");
+/* harmony import */ var _not_found_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./not-found.component */ "./src/app/not-found.component.ts");
+/* harmony import */ var _login_login_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./login/login.component */ "./src/app/login/login.component.ts");
+/* harmony import */ var _logout_logout_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./logout/logout.component */ "./src/app/logout/logout.component.ts");
+/* harmony import */ var _home_home_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./home/home.component */ "./src/app/home/home.component.ts");
+/* harmony import */ var _help_help_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./help/help.component */ "./src/app/help/help.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -482,16 +507,14 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
+
 var routes = [
-    { path: 'dashboard', component: _dashboard_dashboard_component__WEBPACK_IMPORTED_MODULE_2__["DashboardComponent"] },
-    // { path: 'users', component: UserListComponent },
-    // { path: 'users/detail/:id', component: UserDetailComponent },
-    // { path: 'palliatives', component: PalliativeListComponent },
-    // { path: 'palliatives/detail/:id', component: PalliativeDetailComponent },
-    { path: 'login', component: _login_login_component__WEBPACK_IMPORTED_MODULE_4__["LoginComponent"], outlet: 'popup' },
-    { path: 'logout', component: _logout_logout_component__WEBPACK_IMPORTED_MODULE_5__["LogoutComponent"], outlet: 'popup' },
-    { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-    { path: '**', component: _not_found_component__WEBPACK_IMPORTED_MODULE_3__["PageNotFoundComponent"] },
+    { path: 'home', component: _home_home_component__WEBPACK_IMPORTED_MODULE_5__["HomeComponent"] },
+    { path: 'help', component: _help_help_component__WEBPACK_IMPORTED_MODULE_6__["HelpComponent"] },
+    { path: 'login', component: _login_login_component__WEBPACK_IMPORTED_MODULE_3__["LoginComponent"], outlet: 'popup' },
+    { path: 'logout', component: _logout_logout_component__WEBPACK_IMPORTED_MODULE_4__["LogoutComponent"], outlet: 'popup' },
+    { path: '', redirectTo: '/home', pathMatch: 'full' },
+    { path: '**', component: _not_found_component__WEBPACK_IMPORTED_MODULE_2__["PageNotFoundComponent"] },
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {
@@ -499,7 +522,7 @@ var AppRoutingModule = /** @class */ (function () {
     AppRoutingModule = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"])({
             exports: [_angular_router__WEBPACK_IMPORTED_MODULE_1__["RouterModule"]],
-            imports: [_angular_router__WEBPACK_IMPORTED_MODULE_1__["RouterModule"].forRoot(routes)]
+            imports: [_angular_router__WEBPACK_IMPORTED_MODULE_1__["RouterModule"].forRoot(routes, { onSameUrlNavigation: 'reload' })]
         })
     ], AppRoutingModule);
     return AppRoutingModule;
@@ -527,7 +550,7 @@ module.exports = "/* AppComponent's private CSS styles */\r\n\r\n/* h1 {\r\n  fo
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<table class=\"branding branding-uaf\">\r\n  <tr>\r\n    <td>\r\n      <a href=\"http://www.uaf.edu\">\r\n        <img width=\"48px\" src=\"assets/uaf-logo-web.png\" />\r\n      </a>\r\n    </td>\r\n    <td width=\"100%\">\r\n      <div>Alaska University Transportation Center (AUTC)</div>\r\n      <div>Institute of Northern Engineering</div>\r\n    </td>\r\n  </tr>\r\n</table>\r\n\r\n<h1>{{title}}</h1>\r\n<nav>\r\n  <a routerLink=\"/dashboard\">Dashboard</a>\r\n  <a routerLink=\"/palliatives\" routerLinkActive=\"active\">Palliatives</a>\r\n  <a routerLink=\"/users\" routerLinkActive=\"active\">Users</a>\r\n  <a routerLink=\"/admin\" routerLinkActive=\"active\">Admin</a>\r\n  <span *ngIf=\"!authService.isLoggedIn\"><a [routerLink]=\"[{ outlets: { popup: ['login'] } }]\" routerLinkActive=\"active\">Log in</a></span>\r\n  <span *ngIf=\"authService.isLoggedIn\"><a [routerLink]=\"[{ outlets: { popup: ['logout'] } }]\" routerLinkActive=\"active\">Log out</a>\r\n    Signed in as {{authService.signedInUser}}</span>\r\n</nav>\r\n\r\n<div class=\"popup\"><router-outlet name=\"popup\"></router-outlet></div>\r\n<div class=\"mainnav\"><router-outlet></router-outlet></div>\r\n\r\n<app-messages></app-messages>\r\n\r\n<hr/>\r\n\r\n<table class=\"branding branding-cset\">\r\n    <tr>\r\n      <td>\r\n        <a href=\"http://cset.uaf.edu/\">\r\n          <img width=\"48px\" src=\"assets/cset-logo-web.png\" />\r\n        </a>\r\n      </td>\r\n      <td width=\"100%\">\r\n        <div class=\"branding-cset\">Center for Safety Equity in Transportation</div>\r\n      </td>\r\n    </tr>\r\n  </table>"
+module.exports = "<table class=\"branding branding-uaf\">\r\n  <tr>\r\n    <td>\r\n      <a href=\"http://www.uaf.edu\">\r\n        <img width=\"48px\" src=\"assets/uaf-logo-web.png\" />\r\n      </a>\r\n    </td>\r\n    <td width=\"100%\">\r\n      <div>Alaska University Transportation Center (AUTC)</div>\r\n      <div>Institute of Northern Engineering</div>\r\n    </td>\r\n  </tr>\r\n</table>\r\n\r\n<h1>{{title}}</h1>\r\n<nav>\r\n  <!-- <a routerLink=\"/dashboard\">Dashboard</a> -->\r\n  <a routerLink=\"/home\" routerLinkActive=\"active\">Home</a>\r\n  <a routerLink=\"/palliatives\" routerLinkActive=\"active\">Palliatives</a>\r\n  <!-- <a *ngIf=\"authService.isTechnician\" routerLink=\"/technician\" routerLinkActive=\"active\">Technician</a> -->\r\n  <a *ngIf=\"authService.isAdmin\" routerLink=\"/users\" routerLinkActive=\"active\">Users</a>\r\n  <!-- <a *ngIf=\"authService.isAdmin\" routerLink=\"/admin\" routerLinkActive=\"active\">Admin</a> -->\r\n  <a routerLink=\"/help\" routerLinkActive=\"active\">Help</a>\r\n\r\n  <span *ngIf=\"!authService.isLoggedIn\"><a [routerLink]=\"[{ outlets: { popup: ['login'] } }]\" routerLinkActive=\"active\">Log in</a></span>\r\n  <span *ngIf=\"authService.isLoggedIn\"><a [routerLink]=\"[{ outlets: { popup: ['logout'] } }]\" routerLinkActive=\"active\">Log out</a>\r\n    Signed in as {{authService.signedInUser}}</span>\r\n</nav>\r\n\r\n<div class=\"popup\"><router-outlet name=\"popup\"></router-outlet></div>\r\n<div class=\"mainnav\"><router-outlet></router-outlet></div>\r\n\r\n<app-messages></app-messages>\r\n\r\n<hr/>\r\n\r\n<table class=\"branding branding-cset\">\r\n    <tr>\r\n      <td>\r\n        <a href=\"http://cset.uaf.edu/\">\r\n          <img width=\"48px\" src=\"assets/cset-logo-web.png\" />\r\n        </a>\r\n      </td>\r\n      <td width=\"100%\">\r\n        <div class=\"branding-cset\">Center for Safety Equity in Transportation</div>\r\n      </td>\r\n    </tr>\r\n  </table>"
 
 /***/ }),
 
@@ -596,21 +619,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
 /* harmony import */ var _messages_messages_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./messages/messages.component */ "./src/app/messages/messages.component.ts");
 /* harmony import */ var _app_routing_module__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./app-routing.module */ "./src/app/app-routing.module.ts");
-/* harmony import */ var _dashboard_dashboard_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./dashboard/dashboard.component */ "./src/app/dashboard/dashboard.component.ts");
-/* harmony import */ var _user_area_users_routing_module__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./user-area/users-routing.module */ "./src/app/user-area/users-routing.module.ts");
-/* harmony import */ var _user_area_user_list_user_list_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./user-area/user-list/user-list.component */ "./src/app/user-area/user-list/user-list.component.ts");
-/* harmony import */ var _user_area_user_detail_user_detail_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./user-area/user-detail/user-detail.component */ "./src/app/user-area/user-detail/user-detail.component.ts");
-/* harmony import */ var _user_area_user_search_user_search_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./user-area/user-search/user-search.component */ "./src/app/user-area/user-search/user-search.component.ts");
-/* harmony import */ var _palliative_area_palliative_list_palliative_list_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./palliative-area/palliative-list/palliative-list.component */ "./src/app/palliative-area/palliative-list/palliative-list.component.ts");
-/* harmony import */ var _palliative_area_palliative_detail_palliative_detail_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./palliative-area/palliative-detail/palliative-detail.component */ "./src/app/palliative-area/palliative-detail/palliative-detail.component.ts");
-/* harmony import */ var _palliative_area_palliative_search_palliative_search_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./palliative-area/palliative-search/palliative-search.component */ "./src/app/palliative-area/palliative-search/palliative-search.component.ts");
-/* harmony import */ var _not_found_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./not-found.component */ "./src/app/not-found.component.ts");
-/* harmony import */ var _palliative_area_palliatives_routing_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./palliative-area/palliatives-routing.component */ "./src/app/palliative-area/palliatives-routing.component.ts");
-/* harmony import */ var _admin_admin_routing_module__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./admin/admin-routing.module */ "./src/app/admin/admin-routing.module.ts");
-/* harmony import */ var _admin_admin_module__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./admin/admin.module */ "./src/app/admin/admin.module.ts");
-/* harmony import */ var _login_login_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./login/login.component */ "./src/app/login/login.component.ts");
-/* harmony import */ var _auth_auth_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./auth/auth.component */ "./src/app/auth/auth.component.ts");
-/* harmony import */ var _logout_logout_component__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./logout/logout.component */ "./src/app/logout/logout.component.ts");
+/* harmony import */ var _user_area_users_routing_module__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./user-area/users-routing.module */ "./src/app/user-area/users-routing.module.ts");
+/* harmony import */ var _user_area_user_list_user_list_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./user-area/user-list/user-list.component */ "./src/app/user-area/user-list/user-list.component.ts");
+/* harmony import */ var _user_area_user_detail_user_detail_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./user-area/user-detail/user-detail.component */ "./src/app/user-area/user-detail/user-detail.component.ts");
+/* harmony import */ var _user_area_user_search_user_search_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./user-area/user-search/user-search.component */ "./src/app/user-area/user-search/user-search.component.ts");
+/* harmony import */ var _palliative_area_palliative_list_palliative_list_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./palliative-area/palliative-list/palliative-list.component */ "./src/app/palliative-area/palliative-list/palliative-list.component.ts");
+/* harmony import */ var _palliative_area_palliative_detail_palliative_detail_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./palliative-area/palliative-detail/palliative-detail.component */ "./src/app/palliative-area/palliative-detail/palliative-detail.component.ts");
+/* harmony import */ var _palliative_area_palliative_search_palliative_search_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./palliative-area/palliative-search/palliative-search.component */ "./src/app/palliative-area/palliative-search/palliative-search.component.ts");
+/* harmony import */ var _not_found_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./not-found.component */ "./src/app/not-found.component.ts");
+/* harmony import */ var _palliative_area_palliatives_routing_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./palliative-area/palliatives-routing.component */ "./src/app/palliative-area/palliatives-routing.component.ts");
+/* harmony import */ var _admin_admin_routing_module__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./admin/admin-routing.module */ "./src/app/admin/admin-routing.module.ts");
+/* harmony import */ var _admin_admin_module__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./admin/admin.module */ "./src/app/admin/admin.module.ts");
+/* harmony import */ var _login_login_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./login/login.component */ "./src/app/login/login.component.ts");
+/* harmony import */ var _auth_auth_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./auth/auth.component */ "./src/app/auth/auth.component.ts");
+/* harmony import */ var _logout_logout_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./logout/logout.component */ "./src/app/logout/logout.component.ts");
+/* harmony import */ var _help_help_component__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./help/help.component */ "./src/app/help/help.component.ts");
+/* harmony import */ var _home_home_component__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./home/home.component */ "./src/app/home/home.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -640,6 +664,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
+
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -647,28 +672,29 @@ var AppModule = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["NgModule"])({
             declarations: [
                 _app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"],
-                _not_found_component__WEBPACK_IMPORTED_MODULE_16__["PageNotFoundComponent"],
-                _user_area_user_list_user_list_component__WEBPACK_IMPORTED_MODULE_10__["UserListComponent"],
-                _user_area_user_detail_user_detail_component__WEBPACK_IMPORTED_MODULE_11__["UserDetailComponent"],
+                _not_found_component__WEBPACK_IMPORTED_MODULE_15__["PageNotFoundComponent"],
+                _user_area_user_list_user_list_component__WEBPACK_IMPORTED_MODULE_9__["UserListComponent"],
+                _user_area_user_detail_user_detail_component__WEBPACK_IMPORTED_MODULE_10__["UserDetailComponent"],
                 _messages_messages_component__WEBPACK_IMPORTED_MODULE_6__["MessagesComponent"],
-                _dashboard_dashboard_component__WEBPACK_IMPORTED_MODULE_8__["DashboardComponent"],
-                _user_area_user_search_user_search_component__WEBPACK_IMPORTED_MODULE_12__["UserSearchComponent"],
-                _palliative_area_palliative_list_palliative_list_component__WEBPACK_IMPORTED_MODULE_13__["PalliativeListComponent"],
-                _palliative_area_palliative_detail_palliative_detail_component__WEBPACK_IMPORTED_MODULE_14__["PalliativeDetailComponent"],
-                _palliative_area_palliative_search_palliative_search_component__WEBPACK_IMPORTED_MODULE_15__["PalliativeSearchComponent"],
-                _login_login_component__WEBPACK_IMPORTED_MODULE_20__["LoginComponent"],
-                _auth_auth_component__WEBPACK_IMPORTED_MODULE_21__["AuthComponent"],
-                _logout_logout_component__WEBPACK_IMPORTED_MODULE_22__["LogoutComponent"]
+                _user_area_user_search_user_search_component__WEBPACK_IMPORTED_MODULE_11__["UserSearchComponent"],
+                _palliative_area_palliative_list_palliative_list_component__WEBPACK_IMPORTED_MODULE_12__["PalliativeListComponent"],
+                _palliative_area_palliative_detail_palliative_detail_component__WEBPACK_IMPORTED_MODULE_13__["PalliativeDetailComponent"],
+                _palliative_area_palliative_search_palliative_search_component__WEBPACK_IMPORTED_MODULE_14__["PalliativeSearchComponent"],
+                _login_login_component__WEBPACK_IMPORTED_MODULE_19__["LoginComponent"],
+                _auth_auth_component__WEBPACK_IMPORTED_MODULE_20__["AuthComponent"],
+                _logout_logout_component__WEBPACK_IMPORTED_MODULE_21__["LogoutComponent"],
+                _help_help_component__WEBPACK_IMPORTED_MODULE_22__["HelpComponent"],
+                _home_home_component__WEBPACK_IMPORTED_MODULE_23__["HomeComponent"],
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_1__["BrowserAnimationsModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"],
-                _user_area_users_routing_module__WEBPACK_IMPORTED_MODULE_9__["UsersRoutingModule"],
-                _palliative_area_palliatives_routing_component__WEBPACK_IMPORTED_MODULE_17__["PalliativesRoutingModule"],
-                _admin_admin_routing_module__WEBPACK_IMPORTED_MODULE_18__["AdminRoutingModule"],
+                _user_area_users_routing_module__WEBPACK_IMPORTED_MODULE_8__["UsersRoutingModule"],
+                _palliative_area_palliatives_routing_component__WEBPACK_IMPORTED_MODULE_16__["PalliativesRoutingModule"],
+                _admin_admin_routing_module__WEBPACK_IMPORTED_MODULE_17__["AdminRoutingModule"],
                 _app_routing_module__WEBPACK_IMPORTED_MODULE_7__["AppRoutingModule"],
-                _admin_admin_module__WEBPACK_IMPORTED_MODULE_19__["AdminModule"],
+                _admin_admin_module__WEBPACK_IMPORTED_MODULE_18__["AdminModule"],
                 _angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClientModule"],
             ],
             providers: [],
@@ -710,6 +736,9 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var AuthService = /** @class */ (function () {
     function AuthService() {
         this.isLoggedIn = false;
+        this.isAdmin = false;
+        this.isTechnician = false;
+        this.bisLoggedIn = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](false);
         this.signedInUser = 'nobody';
         this.signedInUserId = 0;
         this.username = 'username';
@@ -719,12 +748,18 @@ var AuthService = /** @class */ (function () {
         var _this = this;
         return Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["of"])(true).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["delay"])(1000), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(function (val) {
             _this.isLoggedIn = true;
+            _this.isAdmin = true;
+            _this.isTechnician = true;
+            _this.bisLoggedIn.next(_this.isLoggedIn);
             _this.signedInUser = 'somebody';
             _this.signedInUserId = 21;
         }));
     };
     AuthService.prototype.logout = function () {
         this.isLoggedIn = false;
+        this.isAdmin = false;
+        this.isTechnician = false;
+        this.bisLoggedIn.next(this.isLoggedIn);
         this.signedInUser = 'nobody';
         this.signedInUserId = 0;
     };
@@ -798,79 +833,6 @@ var AuthComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [])
     ], AuthComponent);
     return AuthComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/dashboard/dashboard.component.css":
-/*!***************************************************!*\
-  !*** ./src/app/dashboard/dashboard.component.css ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ""
-
-/***/ }),
-
-/***/ "./src/app/dashboard/dashboard.component.html":
-/*!****************************************************!*\
-  !*** ./src/app/dashboard/dashboard.component.html ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<h3>Top Users</h3>\r\n\r\n<div class=\"grid grid-pad\">\r\n  <a *ngFor=\"let user of users\" class=\"col-1-4\" routerLink=\"/detail/{{user.id}}\">\r\n  <div class=\"module user\">\r\n    <h4>{{user.username}}</h4>\r\n  </div>\r\n  </a>\r\n</div>\r\n\r\n<app-user-search></app-user-search>"
-
-/***/ }),
-
-/***/ "./src/app/dashboard/dashboard.component.ts":
-/*!**************************************************!*\
-  !*** ./src/app/dashboard/dashboard.component.ts ***!
-  \**************************************************/
-/*! exports provided: DashboardComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DashboardComponent", function() { return DashboardComponent; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _user_area_user_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../user-area/user.service */ "./src/app/user-area/user.service.ts");
-var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (undefined && undefined.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var DashboardComponent = /** @class */ (function () {
-    function DashboardComponent(userService) {
-        this.userService = userService;
-        this.users = [];
-    }
-    DashboardComponent.prototype.ngOnInit = function () {
-        this.getHeroes();
-    };
-    DashboardComponent.prototype.getHeroes = function () {
-        var _this = this;
-        this.userService.getUsers()
-            .subscribe(function (users) { return _this.users = users.slice(1, 5); });
-    };
-    DashboardComponent = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
-            selector: 'app-dashboard',
-            template: __webpack_require__(/*! ./dashboard.component.html */ "./src/app/dashboard/dashboard.component.html"),
-            styles: [__webpack_require__(/*! ./dashboard.component.css */ "./src/app/dashboard/dashboard.component.css")]
-        }),
-        __metadata("design:paramtypes", [_user_area_user_service__WEBPACK_IMPORTED_MODULE_1__["UserService"]])
-    ], DashboardComponent);
-    return DashboardComponent;
 }());
 
 
@@ -978,6 +940,132 @@ var DustDBService = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/help/help.component.css":
+/*!*****************************************!*\
+  !*** ./src/app/help/help.component.css ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/help/help.component.html":
+/*!******************************************!*\
+  !*** ./src/app/help/help.component.html ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<p>\n  help works!\n</p>\n"
+
+/***/ }),
+
+/***/ "./src/app/help/help.component.ts":
+/*!****************************************!*\
+  !*** ./src/app/help/help.component.ts ***!
+  \****************************************/
+/*! exports provided: HelpComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HelpComponent", function() { return HelpComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var HelpComponent = /** @class */ (function () {
+    function HelpComponent() {
+    }
+    HelpComponent.prototype.ngOnInit = function () {
+    };
+    HelpComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-help',
+            template: __webpack_require__(/*! ./help.component.html */ "./src/app/help/help.component.html"),
+            styles: [__webpack_require__(/*! ./help.component.css */ "./src/app/help/help.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], HelpComponent);
+    return HelpComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/home/home.component.css":
+/*!*****************************************!*\
+  !*** ./src/app/home/home.component.css ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/home/home.component.html":
+/*!******************************************!*\
+  !*** ./src/app/home/home.component.html ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<app-palliative-search></app-palliative-search>\n\n<h1>Welcome</h1>\nWelcome to the UAF Dust Palliative MPRT Calculator.\n"
+
+/***/ }),
+
+/***/ "./src/app/home/home.component.ts":
+/*!****************************************!*\
+  !*** ./src/app/home/home.component.ts ***!
+  \****************************************/
+/*! exports provided: HomeComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HomeComponent", function() { return HomeComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var HomeComponent = /** @class */ (function () {
+    function HomeComponent() {
+    }
+    HomeComponent.prototype.ngOnInit = function () {
+    };
+    HomeComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-home',
+            template: __webpack_require__(/*! ./home.component.html */ "./src/app/home/home.component.html"),
+            styles: [__webpack_require__(/*! ./home.component.css */ "./src/app/home/home.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], HomeComponent);
+    return HomeComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/login/login.component.css":
 /*!*******************************************!*\
   !*** ./src/app/login/login.component.css ***!
@@ -1051,22 +1139,26 @@ var LoginComponent = /** @class */ (function () {
                 // Providing a `null` value to the named outlet
                 // clears the contents of the named outlet
                 _this.router.navigate([{ outlets: { popup: null } }]);
-            }, 1000);
+            }, 250);
             if (_this.authService.isLoggedIn) {
-                // Get the redirect URL from our auth service
-                // If no redirect has been set, use the default
-                var redirect = _this.authService.redirectUrl ? _this.authService.redirectUrl : '/admin';
-                // Redirect the user
-                _this.router.navigate([redirect]);
+                _this.navigateDefault();
             }
         });
     };
     LoginComponent.prototype.logout = function () {
         this.authService.logout();
         this.setMessage();
+        this.navigateDefault();
     };
     LoginComponent.prototype.cancel = function () {
         this.closePopup();
+    };
+    LoginComponent.prototype.navigateDefault = function () {
+        // Get the redirect URL from our auth service
+        // If no redirect has been set, use the default
+        var redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+        // Redirect the user
+        // this.router.navigate([redirect]);
     };
     LoginComponent.prototype.closePopup = function () {
         // Providing a `null` value to the named outlet
@@ -1170,7 +1262,7 @@ var LogoutComponent = /** @class */ (function () {
             // Providing a `null` value to the named outlet
             // clears the contents of the named outlet
             _this.router.navigate([{ outlets: { popup: null } }]);
-        }, 1000);
+        }, 500);
     };
     LogoutComponent.prototype.gotoDashboard = function () {
         this.router.navigate(['/dashboard']);
@@ -1372,7 +1464,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"palliative\">\r\n\r\n  <h3>{{palliative.shortname | uppercase}} Details</h3>\r\n  <h4>{{palliative.longname}}</h4>\r\n  <table class=\"altcolors\"><tbody class=\"altcolors\">\r\n    <tr><td><label>id:</label></td><td class=\"description\">{{palliative.id}}</td></tr>\r\n    <tr><td><label>Test ID:</label></td><td class=\"description\">{{palliative.testid}}</td></tr>\r\n    <tr><td><label>Description:</label></td><td class=\"description\">{{palliative.description}}</td></tr>\r\n    <tr><td><label>userid:</label></td><td>{{palliative.userid}}<div *ngIf=\"user\"><span> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></div></td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif;\">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif; font-style: italic;\">t</span></label></td><td>{{palliative.mprtTime}}</td></tr>\r\n  </tbody>\r\n  </table>\r\n\r\n  <div class=\"mprtGraph\">\r\n    <label>MPRT <span style=\"font-family: serif;\">&tau;</span> Graph</label>\r\n    <button *ngIf=\"!graphVisible\" (click)=\"showGraph()\">show</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"hideGraph()\">hide</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"plotGraph()\">plot</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"cleanData()\">clean</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"calcMPRT()\">calc mprt</button>\r\n    <div *ngIf=\"graphVisible\">\r\n      <div id=\"mprtGraphC\"></div>\r\n      <div id=\"mprtGraphLnC\"></div>\r\n      <div id=\"mprtGraphDeriv1\"></div>\r\n      <div id=\"mprtGraphDeriv2\"></div>\r\n      <div id=\"mprtGraphRSQ\"></div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"dataPointList\">\r\n    <label>Data Points</label>\r\n      <button *ngIf=\"!dataVisible\" (click)=\"showData()\">show</button>\r\n      <button *ngIf=\"dataVisible\" (click)=\"hideData()\">hide</button>\r\n    \r\n    <table *ngIf=\"dataVisible\">\r\n      <tbody class=\"altcolors\">\r\n      <tr><th>t</th><th>C</th><th>ln(C)</th><th>C'(t)</th><th>C''(t)</th><th>R^2</th></tr>\r\n      <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n        <td>{{dp.t | number}}</td>\r\n        <td>{{dp.C | number}}</td>\r\n        <td>{{dp.lnC | number}}</td>\r\n        <td>{{dp.dCdt | number}}</td>\r\n        <td>{{dp.deriv2 | number}}</td>\r\n        <td>{{dp.rsq | number}}</td>\r\n      </tr>\r\n    </tbody>\r\n    </table>\r\n  </div>\r\n\r\n  <h2>Edit Details</h2>\r\n  <div><label>Test ID:</label><input [(ngModel)]=\"palliative.testid\" placeholder=\"testid\"/></div>\r\n  <div><label>Short Name:</label><input [(ngModel)]=\"palliative.shortname\" placeholder=\"shortname\"/></div>\r\n  <div><label>Long Name:</label><input [(ngModel)]=\"palliative.longname\" placeholder=\"longname\"/></div>\r\n  <div><label>Description:</label><input [(ngModel)]=\"palliative.description\" placeholder=\"description\"/></div>\r\n  <div><label>User Id:</label><input [(ngModel)]=\"palliative.userid\" placeholder=\"userid\"/></div>\r\n\r\n  <button (click)=\"save()\">save</button>\r\n  <button (blick)=\"cancel()\">close</button>\r\n\r\n  <div class=\"dataPointList padded\">\r\n    <h3>Data Points</h3>\r\n    <table>\r\n      <tr><th>t</th><th>C</th></tr>\r\n      <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n        <td><input [(ngModel)]=\"dp.t\"/></td>\r\n        <td><input [(ngModel)]=\"dp.C\"/></td>\r\n      </tr>\r\n    </table>\r\n    <button (click)=\"addDatapoint()\">add datapoint</button>\r\n    <br/><textarea [(ngModel)]=\"textboxText\" cols=\"40\" rows=\"10\">{{textboxText}}</textarea>\r\n    <br/><button (click)=\"importCSV()\">import CSV</button>\r\n  </div>\r\n\r\n</div>\r\n"
+module.exports = "<div *ngIf=\"palliative\">\r\n\r\n  <h1>\"{{palliative.shortname | uppercase}}\" Details</h1>\r\n  <h2>\"{{palliative.longname}}\"</h2>\r\n  <table class=\"altcolors\"><tbody class=\"altcolors\">\r\n    <tr><td><label>id:</label></td><td class=\"description\">{{palliative.id}}</td></tr>\r\n    <tr><td><label>Test ID:</label></td><td class=\"description\">{{palliative.testid}}</td></tr>\r\n    <tr><td><label>Description:</label></td><td class=\"description\">{{palliative.description}}</td></tr>\r\n    <tr><td><label>userid:</label></td><td>{{palliative.userid}}<span *ngIf=\"user\"> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif;\">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif; font-style: italic;\">t</span></label></td><td>{{palliative.mprtTime}}</td></tr>\r\n  </tbody>\r\n  </table>\r\n\r\n  <div class=\"mprtGraph\">\r\n    <label>MPRT <span style=\"font-family: serif;\">&tau;</span> Graph</label>\r\n    <button *ngIf=\"!graphVisible\" (click)=\"showGraph()\">show</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"hideGraph()\">hide</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"plotGraph()\">plot</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"calcMPRT()\">calc mprt</button>\r\n    <div *ngIf=\"graphVisible\">\r\n      <div id=\"mprtGraphC\"></div>\r\n      <div id=\"mprtGraphLnC\"></div>\r\n      <div id=\"mprtGraphDeriv1\"></div>\r\n      <div id=\"mprtGraphDeriv2\"></div>\r\n      <div id=\"mprtGraphRSQ\"></div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"dataPointList\">\r\n    <label>Data Points</label>\r\n      <button *ngIf=\"!dataVisible\" (click)=\"showData()\">show</button>\r\n      <button *ngIf=\"dataVisible\" (click)=\"hideData()\">hide</button>\r\n    \r\n    <table *ngIf=\"dataVisible\">\r\n      <tbody class=\"altcolors\">\r\n      <tr><th>t</th><th>C</th><th>ln(C)</th><th>C'(t)</th><th>C''(t)</th><th>R^2</th></tr>\r\n      <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n        <td>{{dp.t | number}}</td>\r\n        <td>{{dp.C | number}}</td>\r\n        <td>{{dp.lnC | number}}</td>\r\n        <td>{{dp.dCdt | number}}</td>\r\n        <td>{{dp.deriv2 | number}}</td>\r\n        <td>{{dp.rsq | number}}</td>\r\n      </tr>\r\n    </tbody>\r\n    </table>\r\n  </div>\r\n  \r\n  <button *ngIf=\"!technicianView && authService.isTechnician\" (click)=\"edit()\">Edit</button>\r\n\r\n  <div *ngIf=\"technicianView\">\r\n    <h1>Edit Details</h1>\r\n    <div><label>Test ID:</label>&nbsp;<input [(ngModel)]=\"palliative.testid\" placeholder=\"testid\"/></div>\r\n    <div><label>Short Name:</label>&nbsp;<input [(ngModel)]=\"palliative.shortname\" placeholder=\"shortname\"/></div>\r\n    <div><label>Long Name:</label>&nbsp;<input [(ngModel)]=\"palliative.longname\" placeholder=\"longname\"/></div>\r\n    <div><label>Description:</label>&nbsp;<input [(ngModel)]=\"palliative.description\" placeholder=\"description\"/></div>\r\n    <div><label>User Id:</label>&nbsp;<input [(ngModel)]=\"palliative.userid\" placeholder=\"userid\"/></div>\r\n\r\n    <button (click)=\"save()\">save</button>\r\n    <button (click)=\"cancel()\">cancel</button>\r\n    <button (click)=\"cleanData()\">clean</button>\r\n\r\n    <div class=\"dataPointList padded\">\r\n      <h3>Data Points</h3>\r\n      <br/><textarea [(ngModel)]=\"textboxText\" cols=\"40\" rows=\"10\">{{textboxText}}</textarea>\r\n      <br/><button (click)=\"importCSV()\">import CSV</button>\r\n      <table>\r\n        <tr><th>t</th><th>C</th></tr>\r\n        <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n          <td><input [(ngModel)]=\"dp.t\"/></td>\r\n          <td><input [(ngModel)]=\"dp.C\"/></td>\r\n        </tr>\r\n      </table>\r\n      <button (click)=\"addDatapoint()\">add datapoint</button>\r\n    </div>\r\n\r\n  </div>\r\n\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1393,6 +1485,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _palliative_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../palliative.service */ "./src/app/palliative-area/palliative.service.ts");
 /* harmony import */ var _user_area_user__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../user-area/user */ "./src/app/user-area/user.ts");
 /* harmony import */ var _user_area_user_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../user-area/user.service */ "./src/app/user-area/user.service.ts");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../auth.service */ "./src/app/auth.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1409,19 +1502,23 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var PalliativeDetailComponent = /** @class */ (function () {
-    function PalliativeDetailComponent(route, router, palliativeService, userService, location) {
+    function PalliativeDetailComponent(route, router, palliativeService, authService, userService, location) {
         this.route = route;
         this.router = router;
         this.palliativeService = palliativeService;
+        this.authService = authService;
         this.userService = userService;
         this.location = location;
         this.dataVisible = false;
         this.graphVisible = false;
         this.textboxText = '';
+        this.technicianView = false;
     }
     PalliativeDetailComponent.prototype.ngOnInit = function () {
         this.getPalliative();
+        this.router.onSameUrlNavigation = "reload";
     };
     PalliativeDetailComponent.prototype.getUser = function () {
         var _this = this;
@@ -1454,8 +1551,13 @@ var PalliativeDetailComponent = /** @class */ (function () {
     PalliativeDetailComponent.prototype.gotoPalliatives = function () {
         this.router.navigate(['/palliatives']);
     };
+    PalliativeDetailComponent.prototype.edit = function () {
+        this.technicianView = true;
+    };
     PalliativeDetailComponent.prototype.cancel = function () {
-        this.gotoPalliatives();
+        this.technicianView = false;
+        this.getPalliative();
+        // this.gotoPalliatives();
     };
     PalliativeDetailComponent.prototype.showData = function () {
         this.dataVisible = true;
@@ -1562,6 +1664,7 @@ var PalliativeDetailComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_1__["ActivatedRoute"],
             _angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"],
             _palliative_service__WEBPACK_IMPORTED_MODULE_4__["PalliativeService"],
+            _auth_service__WEBPACK_IMPORTED_MODULE_7__["AuthService"],
             _user_area_user_service__WEBPACK_IMPORTED_MODULE_6__["UserService"],
             _angular_common__WEBPACK_IMPORTED_MODULE_2__["Location"]])
     ], PalliativeDetailComponent);
@@ -1590,7 +1693,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<app-palliative-search></app-palliative-search>\r\n\r\n<div>\r\n  <label>Add Palliative:</label>\r\n    <input #palliativeName />\r\n  <!-- (click) passes input value to add() and then clears the input -->\r\n  <button (click)=\"add(palliativeName.value); palliativeName.value=''\">add</button>\r\n</div>\r\n\r\n<ul class=\"items\">\r\n  <li *ngFor=\"let palliative of palliatives\">\r\n    <a routerLink=\"/palliatives/detail/{{palliative.id}}\">\r\n    <span class=\"badge\">{{palliative.id}}</span>{{palliative.shortname}}</a>\r\n    <button class=\"delete\" title=\"delete palliative\" (click)=\"delete(palliative)\">x</button>\r\n  </li>\r\n</ul>\r\n\r\n<!-- <app-palliative-detail [palliative]=\"selectedPalliative\"></app-palliative-detail> -->\r\n\r\n"
+module.exports = "<app-palliative-search></app-palliative-search>\r\n\r\n<div *ngIf=\"authService.isTechnician\">\r\n    <label>Add Palliative</label>&nbsp;\r\n      <input #palliativeName />\r\n    <!-- (click) passes input value to add() and then clears the input -->\r\n    <button (click)=\"add(palliativeName.value); palliativeName.value=''\">add</button>\r\n</div>\r\n\r\n<ul class=\"items\">\r\n  <li *ngFor=\"let palliative of palliatives\">\r\n    <a routerLink=\"/palliatives/detail/{{palliative.id}}\">\r\n    <span class=\"badge\">{{palliative.id}}</span>{{palliative.shortname}}</a>\r\n    <button *ngIf=\"authService.isAdmin\" class=\"delete\" title=\"delete palliative\" (click)=\"delete(palliative)\">x</button>\r\n  </li>\r\n</ul>\r\n\r\n<!-- <app-palliative-detail [palliative]=\"selectedPalliative\"></app-palliative-detail> -->\r\n\r\n"
 
 /***/ }),
 
@@ -1606,6 +1709,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PalliativeListComponent", function() { return PalliativeListComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _palliative_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../palliative.service */ "./src/app/palliative-area/palliative.service.ts");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../auth.service */ "./src/app/auth.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1617,9 +1721,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
 var PalliativeListComponent = /** @class */ (function () {
-    function PalliativeListComponent(palliativeService) {
+    function PalliativeListComponent(palliativeService, authService) {
         this.palliativeService = palliativeService;
+        this.authService = authService;
     }
     PalliativeListComponent.prototype.ngOnInit = function () {
         this.getPalliatives();
@@ -1632,13 +1738,14 @@ var PalliativeListComponent = /** @class */ (function () {
         }
         this.palliativeService.addPalliative({ id: null, shortname: name })
             .subscribe(function (palliative) {
-            // this.palliatives.push(palliative);
             _this.getPalliatives();
         });
     };
     PalliativeListComponent.prototype.delete = function (palliative) {
-        this.palliatives = this.palliatives.filter(function (h) { return h !== palliative; });
-        this.palliativeService.deletePalliative(palliative).subscribe();
+        var _this = this;
+        this.palliativeService.deletePalliative(palliative).subscribe(function () {
+            _this.getPalliatives();
+        });
     };
     PalliativeListComponent.prototype.getPalliatives = function () {
         var _this = this;
@@ -1650,7 +1757,8 @@ var PalliativeListComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./palliative-list.component.html */ "./src/app/palliative-area/palliative-list/palliative-list.component.html"),
             styles: [__webpack_require__(/*! ./palliative-list.component.css */ "./src/app/palliative-area/palliative-list/palliative-list.component.css")]
         }),
-        __metadata("design:paramtypes", [_palliative_service__WEBPACK_IMPORTED_MODULE_1__["PalliativeService"]])
+        __metadata("design:paramtypes", [_palliative_service__WEBPACK_IMPORTED_MODULE_1__["PalliativeService"],
+            _auth_service__WEBPACK_IMPORTED_MODULE_2__["AuthService"]])
     ], PalliativeListComponent);
     return PalliativeListComponent;
 }());
@@ -1677,7 +1785,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"palliative-search-component\">\r\n<h4>Palliative Search</h4>\r\n\r\n<input #searchBox id=\"search-box\" (keyup)=\"search(searchBox.value)\" />\r\n\r\n<ul class=\"search-result\">\r\n  <li *ngFor=\"let palliative of palliatives$ | async\">\r\n    <a routerLink=\"detail/{{palliative.id}}\">{{palliative.shortname}}</a>\r\n  </li>\r\n</ul>\r\n</div>"
+module.exports = "<div id=\"palliative-search-component\">\r\n\r\n  <label>Palliative Search</label>&nbsp;\r\n<input #searchBox id=\"search-box\" (keyup)=\"search(searchBox.value)\" />\r\n\r\n<ul class=\"search-result\">\r\n  <li *ngFor=\"let palliative of palliatives$ | async\">\r\n    <a routerLink=\"/palliatives/detail/{{palliative.id}}\">{{palliative.shortname}}</a>\r\n  </li>\r\n</ul>\r\n</div>"
 
 /***/ }),
 
@@ -2396,7 +2504,7 @@ module.exports = "/* DetailComponent's private CSS styles */\r\n\r\n"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"user$ | async as user\">\r\n\r\n  <h3>{{user.username | uppercase}} Details</h3>\r\n  <div><span>id: {{user.id}}</span></div>\r\n  <!-- <div><span>Name: {{user.firstname}} {{user.lastname}}</span></div>\r\n  <div><span>Organization: {{user.organization}}</span></div>\r\n  <div><span>Email: {{user.email}}</span></div> -->\r\n  \r\n  <div><label>First name:<input [(ngModel)]=\"user.firstname\" placeholder=\"firstname\"></label></div>\r\n  <div><label>Last name:<input [(ngModel)]=\"user.lastname\" placeholder=\"lastname\"></label></div>\r\n  <div><label>Organization:<input [(ngModel)]=\"user.organization\" placeholder=\"organization\"></label></div>\r\n  <div><label>Email:<input [(ngModel)]=\"user.email\" placeholder=\"email\"></label></div>\r\n  \r\n  <button (click)=\"save()\">save</button>\r\n  <button (click)=\"goBack()\">go back</button>\r\n  <button (click)=\"gotoUsers(user)\">go to users</button>\r\n</div>"
+module.exports = "<div *ngIf=\"user$ | async as user\">\r\n\r\n  <h3>{{theUser.username | uppercase}} Details</h3>\r\n  <div><span>id: {{theUser.id}}</span></div>\r\n  <!-- <div><span>Name: {{theUser.firstname}} {{theUser.lastname}}</span></div>\r\n  <div><span>Organization: {{theUser.organization}}</span></div>\r\n  <div><span>Email: {{theUser.email}}</span></div> -->\r\n  \r\n  <div><label>First name:<input [(ngModel)]=\"theUser.firstname\" placeholder=\"firstname\"></label></div>\r\n  <div><label>Last name:<input [(ngModel)]=\"theUser.lastname\" placeholder=\"lastname\"></label></div>\r\n  <div><label>Organization:<input [(ngModel)]=\"theUser.organization\" placeholder=\"organization\"></label></div>\r\n  <div><label>Email:<input [(ngModel)]=\"theUser.email\" placeholder=\"email\"></label></div>\r\n  \r\n  <button *ngIf=\"authService.isAdmin\" (click)=\"save()\">save</button>\r\n  <button (click)=\"goBack()\">go back</button>\r\n  <!-- <button (click)=\"gotoUsers(user)\">go to users</button> -->\r\n</div>"
 
 /***/ }),
 
@@ -2415,6 +2523,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
 /* harmony import */ var _user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../user */ "./src/app/user-area/user.ts");
 /* harmony import */ var _user_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../user.service */ "./src/app/user-area/user.service.ts");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../auth.service */ "./src/app/auth.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2429,28 +2538,32 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var UserDetailComponent = /** @class */ (function () {
-    // user: User;
-    function UserDetailComponent(route, router, service, location) {
+    function UserDetailComponent(route, router, service, location, authService) {
         this.route = route;
         this.router = router;
         this.service = service;
         this.location = location;
+        this.authService = authService;
     }
     UserDetailComponent.prototype.ngOnInit = function () {
+        var _this = this;
         var id = +this.route.snapshot.paramMap.get('id');
         this.user$ = this.service.getUser(id);
+        this.user$.subscribe(function (user) {
+            _this.theUser = user;
+        });
     };
     UserDetailComponent.prototype.getUser = function () {
         var _this = this;
         var id = +this.route.snapshot.paramMap.get('id');
-        this.service.getUser(id).subscribe(function (user) { return _this.user = user; });
+        this.service.getUser(id).subscribe(function (user) { return _this.theUser = user; });
     };
     UserDetailComponent.prototype.save = function () {
         var _this = this;
-        this.service.updateUser(this.user)
+        this.service.updateUser(this.theUser)
             .subscribe(function () {
-            // this.goBack()
             _this.getUser();
         });
     };
@@ -2459,7 +2572,7 @@ var UserDetailComponent = /** @class */ (function () {
         this.router.navigate(['/users', { id: userId }]);
     };
     UserDetailComponent.prototype.goBack = function () {
-        this.location.back();
+        this.router.navigate(['/users', { id: this.theUser.id }]);
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
@@ -2474,7 +2587,8 @@ var UserDetailComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_1__["ActivatedRoute"],
             _angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"],
             _user_service__WEBPACK_IMPORTED_MODULE_4__["UserService"],
-            _angular_common__WEBPACK_IMPORTED_MODULE_2__["Location"]])
+            _angular_common__WEBPACK_IMPORTED_MODULE_2__["Location"],
+            _auth_service__WEBPACK_IMPORTED_MODULE_5__["AuthService"]])
     ], UserDetailComponent);
     return UserDetailComponent;
 }());
@@ -2501,7 +2615,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Users</h2>\r\n\r\n<div>\r\n  <label>User name:\r\n    <input #userName />\r\n  </label>\r\n  <!-- (click) passes input value to add() and then clears the input -->\r\n  <button (click)=\"add(userName.value); userName.value=''\">\r\n    add\r\n  </button>\r\n</div>\r\n\r\n<ul class=\"items\">\r\n  <li *ngFor=\"let user of users$ | async\"\r\n  [class.selected]=\"user.id === selectedId\"\r\n  >\r\n    <a routerLink=\"/users/detail/{{user.id}}\">\r\n      <span class=\"badge\">{{user.id}}</span> {{user.username}}</a>\r\n      <button class=\"delete\" title=\"delete user\"\r\n      (click)=\"delete(user)\">x</button>\r\n  </li>\r\n</ul>\r\n\r\n<app-user-detail [user]=\"selectedUser\"></app-user-detail>\r\n"
+module.exports = "<h1>Users<span *ngIf=\"authService.isAdmin\"> Administration</span></h1>\r\n\r\n<div *ngIf=\"authService.isAdmin\">\r\n  <label>User name:\r\n    <input #userName />\r\n  </label>&nbsp;\r\n  <!-- (click) passes input value to add() and then clears the input -->\r\n  <button (click)=\"add(userName.value); userName.value=''\">\r\n    add\r\n  </button>\r\n</div>\r\n\r\n<ul class=\"items\">\r\n  <li *ngFor=\"let user of users$ | async\"\r\n  [class.selected]=\"user.id === selectedId\"\r\n  >\r\n    <a routerLink=\"/users/detail/{{user.id}}\">\r\n      <span class=\"badge\">{{user.id}}</span> {{user.username}}</a>\r\n      <button *ngIf=\"authService.isAdmin\" class=\"delete\" title=\"delete user\" (click)=\"delete(user)\">x</button>\r\n  </li>\r\n</ul>\r\n\r\n<!-- <app-user-detail [user]=\"selectedUser\"></app-user-detail> -->\r\n"
 
 /***/ }),
 
@@ -2519,6 +2633,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _user_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../user.service */ "./src/app/user-area/user.service.ts");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../auth.service */ "./src/app/auth.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2532,19 +2647,22 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var UserListComponent = /** @class */ (function () {
-    function UserListComponent(service, route) {
+    function UserListComponent(service, route, authService) {
         this.service = service;
         this.route = route;
+        this.authService = authService;
     }
     UserListComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        // this.getUsers();
-        this.users$ = this.route.paramMap.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["switchMap"])(function (params) {
-            // + causes the returned string to be converted to a number
-            _this.selectedId = +params.get('id');
-            return _this.service.getUsers();
-        }));
+        this.getUsers();
+        // this.users$ = this.route.paramMap.pipe(
+        //   switchMap((params: ParamMap) => {
+        //     // + causes the returned string to be converted to a number
+        //     this.selectedId = +params.get('id');
+        //     return this.service.getUsers();
+        //   })
+        // );
     };
     UserListComponent.prototype.add = function (name) {
         var _this = this;
@@ -2554,16 +2672,25 @@ var UserListComponent = /** @class */ (function () {
         }
         this.service.addUser({ id: null, username: name })
             .subscribe(function (user) {
-            _this.users.push(user);
+            _this.getUsers();
         });
     };
     UserListComponent.prototype.delete = function (user) {
-        this.users = this.users.filter(function (h) { return h !== user; });
-        this.service.deleteUser(user).subscribe();
+        var _this = this;
+        this.theUsers = this.theUsers.filter(function (h) { return h !== user; });
+        this.service.deleteUser(user).subscribe(function () {
+            _this.getUsers();
+        });
     };
     UserListComponent.prototype.getUsers = function () {
         var _this = this;
-        this.service.getUsers().subscribe(function (users) { return _this.users = users; });
+        this.users$ = this.route.paramMap.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["switchMap"])(function (params) {
+            // + causes the returned string to be converted to a number
+            _this.selectedId = +params.get('id');
+            return _this.service.getUsers();
+        }));
+        this.users$.subscribe(function (users) { return _this.theUsers = users; });
+        // this.service.getUsers().subscribe(users => this.theUsers = users);
     };
     UserListComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -2572,7 +2699,8 @@ var UserListComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./user-list.component.css */ "./src/app/user-area/user-list/user-list.component.css")]
         }),
         __metadata("design:paramtypes", [_user_service__WEBPACK_IMPORTED_MODULE_3__["UserService"],
-            _angular_router__WEBPACK_IMPORTED_MODULE_1__["ActivatedRoute"]])
+            _angular_router__WEBPACK_IMPORTED_MODULE_1__["ActivatedRoute"],
+            _auth_service__WEBPACK_IMPORTED_MODULE_4__["AuthService"]])
     ], UserListComponent);
     return UserListComponent;
 }());
@@ -2735,7 +2863,9 @@ var UserService = /** @class */ (function () {
     /** PUT: update the user on the server */
     UserService.prototype.updateUser = function (user) {
         var _this = this;
-        return this.http.put(this.serviceUrl, user, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("updated user id=" + user.id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('updateUser')));
+        var id = user.id;
+        var url = this.serviceUrl + "/" + id;
+        return this.http.put(url, user, httpOptions).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("updated user id=" + user.id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('updateUser')));
     };
     /** POST: add a new user to the server */
     UserService.prototype.addUser = function (user) {

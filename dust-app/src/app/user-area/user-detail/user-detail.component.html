@@ -1,17 +1,17 @@
 <div *ngIf="user$ | async as user">
 
-  <h3>{{user.username | uppercase}} Details</h3>
-  <div><span>id: {{user.id}}</span></div>
-  <!-- <div><span>Name: {{user.firstname}} {{user.lastname}}</span></div>
-  <div><span>Organization: {{user.organization}}</span></div>
-  <div><span>Email: {{user.email}}</span></div> -->
+  <h3>{{theUser.username | uppercase}} Details</h3>
+  <div><span>id: {{theUser.id}}</span></div>
+  <!-- <div><span>Name: {{theUser.firstname}} {{theUser.lastname}}</span></div>
+  <div><span>Organization: {{theUser.organization}}</span></div>
+  <div><span>Email: {{theUser.email}}</span></div> -->
   
-  <div><label>First name:<input [(ngModel)]="user.firstname" placeholder="firstname"></label></div>
-  <div><label>Last name:<input [(ngModel)]="user.lastname" placeholder="lastname"></label></div>
-  <div><label>Organization:<input [(ngModel)]="user.organization" placeholder="organization"></label></div>
-  <div><label>Email:<input [(ngModel)]="user.email" placeholder="email"></label></div>
+  <div><label>First name:<input [(ngModel)]="theUser.firstname" placeholder="firstname"></label></div>
+  <div><label>Last name:<input [(ngModel)]="theUser.lastname" placeholder="lastname"></label></div>
+  <div><label>Organization:<input [(ngModel)]="theUser.organization" placeholder="organization"></label></div>
+  <div><label>Email:<input [(ngModel)]="theUser.email" placeholder="email"></label></div>
   
-  <button (click)="save()">save</button>
+  <button *ngIf="authService.isAdmin" (click)="save()">save</button>
   <button (click)="goBack()">go back</button>
-  <button (click)="gotoUsers(user)">go to users</button>
+  <!-- <button (click)="gotoUsers(user)">go to users</button> -->
 </div>

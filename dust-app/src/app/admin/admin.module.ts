@@ -19,7 +19,7 @@ import { AdminRoutingModule } from './admin-routing.module';
     AdminComponent,
     AdminDashboardComponent,
     ManageUsersComponent,
-    ManagePalliativesComponent,
+    ManagePalliativesComponent
   ]
 })
 export class AdminModule { }

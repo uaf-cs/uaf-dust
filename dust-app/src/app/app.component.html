@@ -14,10 +14,14 @@
 
 <h1>{{title}}</h1>
 <nav>
-  <a routerLink="/dashboard">Dashboard</a>
+  <!-- <a routerLink="/dashboard">Dashboard</a> -->
+  <a routerLink="/home" routerLinkActive="active">Home</a>
   <a routerLink="/palliatives" routerLinkActive="active">Palliatives</a>
-  <a routerLink="/users" routerLinkActive="active">Users</a>
-  <a routerLink="/admin" routerLinkActive="active">Admin</a>
+  <!-- <a *ngIf="authService.isTechnician" routerLink="/technician" routerLinkActive="active">Technician</a> -->
+  <a *ngIf="authService.isAdmin" routerLink="/users" routerLinkActive="active">Users</a>
+  <!-- <a *ngIf="authService.isAdmin" routerLink="/admin" routerLinkActive="active">Admin</a> -->
+  <a routerLink="/help" routerLinkActive="active">Help</a>
+
   <span *ngIf="!authService.isLoggedIn"><a [routerLink]="[{ outlets: { popup: ['login'] } }]" routerLinkActive="active">Log in</a></span>
   <span *ngIf="authService.isLoggedIn"><a [routerLink]="[{ outlets: { popup: ['logout'] } }]" routerLinkActive="active">Log out</a>
     Signed in as {{authService.signedInUser}}</span>

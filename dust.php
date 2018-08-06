@@ -84,19 +84,23 @@
 
     // $result = $db->query($sql);
 
-    if ($method == 'GET')
+    if ($method == 'GET') {
         $result = $db->query($sql);
-    else
+    } else {
         $result = $db->exec($sql);
-
-    if (!$result) {
-        http_response_code(404);
-        die(json_encode($db->lastErrorMsg()));
     }
 
-    $log = "<br/>METHOD: " . $method . " | TABLE: " . $table . " | KEY: " . $key . " | input: " . $fileContents . " | " . SQLite3::escapeString($sql) . " | " . $db->lastErrorMsg();
-    $date = date('m/d/Y h:i:s a', time());
-    $db->exec("INSERT INTO log (dtg, log) VALUES ('${date}', '${log}');");
+    if (!$result) {
+        $lastErrorMsg = $db->lastErrorMsg();
+    
+        $log = "<br/>METHOD: " . $method . " | TABLE: " . $table . " | KEY: " . $key . " | input: " . $fileContents . " | " . SQLite3::escapeString($sql) . " | " . $db->lastErrorMsg();
+        $date = date('m/d/Y h:i:s a', time());
+        $db->exec("INSERT INTO log (dtg, log) VALUES ('${date}', '${log}');");
+        
+        http_response_code(404);
+        die(json_encode($lastErrorMsg));
+    }
+
 
     // requery if not a GET
     if ($method != 'GET') {

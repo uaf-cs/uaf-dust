@@ -1,12 +1,12 @@
 <div *ngIf="palliative">
 
-  <h3>{{palliative.shortname | uppercase}} Details</h3>
-  <h4>{{palliative.longname}}</h4>
+  <h1>"{{palliative.shortname | uppercase}}" Details</h1>
+  <h2>"{{palliative.longname}}"</h2>
   <table class="altcolors"><tbody class="altcolors">
     <tr><td><label>id:</label></td><td class="description">{{palliative.id}}</td></tr>
     <tr><td><label>Test ID:</label></td><td class="description">{{palliative.testid}}</td></tr>
     <tr><td><label>Description:</label></td><td class="description">{{palliative.description}}</td></tr>
-    <tr><td><label>userid:</label></td><td>{{palliative.userid}}<div *ngIf="user"><span> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></div></td></tr>
+    <tr><td><label>userid:</label></td><td>{{palliative.userid}}<span *ngIf="user"> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></td></tr>
     <tr><td><label>mprt <span style="font-family: serif;">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr>
     <tr><td><label>mprt <span style="font-family: serif; font-style: italic;">t</span></label></td><td>{{palliative.mprtTime}}</td></tr>
   </tbody>
@@ -17,7 +17,6 @@
     <button *ngIf="!graphVisible" (click)="showGraph()">show</button>
     <button *ngIf="graphVisible" (click)="hideGraph()">hide</button>
     <button *ngIf="graphVisible" (click)="plotGraph()">plot</button>
-    <button *ngIf="graphVisible" (click)="cleanData()">clean</button>
     <button *ngIf="graphVisible" (click)="calcMPRT()">calc mprt</button>
     <div *ngIf="graphVisible">
       <div id="mprtGraphC"></div>
@@ -47,29 +46,35 @@
     </tbody>
     </table>
   </div>
+  
+  <button *ngIf="!technicianView && authService.isTechnician" (click)="edit()">Edit</button>
 
-  <h2>Edit Details</h2>
-  <div><label>Test ID:</label><input [(ngModel)]="palliative.testid" placeholder="testid"/></div>
-  <div><label>Short Name:</label><input [(ngModel)]="palliative.shortname" placeholder="shortname"/></div>
-  <div><label>Long Name:</label><input [(ngModel)]="palliative.longname" placeholder="longname"/></div>
-  <div><label>Description:</label><input [(ngModel)]="palliative.description" placeholder="description"/></div>
-  <div><label>User Id:</label><input [(ngModel)]="palliative.userid" placeholder="userid"/></div>
+  <div *ngIf="technicianView">
+    <h1>Edit Details</h1>
+    <div><label>Test ID:</label>&nbsp;<input [(ngModel)]="palliative.testid" placeholder="testid"/></div>
+    <div><label>Short Name:</label>&nbsp;<input [(ngModel)]="palliative.shortname" placeholder="shortname"/></div>
+    <div><label>Long Name:</label>&nbsp;<input [(ngModel)]="palliative.longname" placeholder="longname"/></div>
+    <div><label>Description:</label>&nbsp;<input [(ngModel)]="palliative.description" placeholder="description"/></div>
+    <div><label>User Id:</label>&nbsp;<input [(ngModel)]="palliative.userid" placeholder="userid"/></div>
 
-  <button (click)="save()">save</button>
-  <button (blick)="cancel()">close</button>
+    <button (click)="save()">save</button>
+    <button (click)="cancel()">cancel</button>
+    <button (click)="cleanData()">clean</button>
 
-  <div class="dataPointList padded">
-    <h3>Data Points</h3>
-    <table>
-      <tr><th>t</th><th>C</th></tr>
-      <tr *ngFor="let dp of palliative.data" class="dataPoint">
-        <td><input [(ngModel)]="dp.t"/></td>
-        <td><input [(ngModel)]="dp.C"/></td>
-      </tr>
-    </table>
-    <button (click)="addDatapoint()">add datapoint</button>
-    <br/><textarea [(ngModel)]="textboxText" cols="40" rows="10">{{textboxText}}</textarea>
-    <br/><button (click)="importCSV()">import CSV</button>
+    <div class="dataPointList padded">
+      <h3>Data Points</h3>
+      <br/><textarea [(ngModel)]="textboxText" cols="40" rows="10">{{textboxText}}</textarea>
+      <br/><button (click)="importCSV()">import CSV</button>
+      <table>
+        <tr><th>t</th><th>C</th></tr>
+        <tr *ngFor="let dp of palliative.data" class="dataPoint">
+          <td><input [(ngModel)]="dp.t"/></td>
+          <td><input [(ngModel)]="dp.C"/></td>
+        </tr>
+      </table>
+      <button (click)="addDatapoint()">add datapoint</button>
+    </div>
+
   </div>
 
 </div>

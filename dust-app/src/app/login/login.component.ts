@@ -40,15 +40,10 @@ export class LoginComponent implements OnInit {
         // Providing a `null` value to the named outlet
         // clears the contents of the named outlet
         this.router.navigate([{ outlets: { popup: null } }]);
-      }, 1000);
+      }, 250);
 
       if (this.authService.isLoggedIn) {
-        // Get the redirect URL from our auth service
-        // If no redirect has been set, use the default
-        const redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/admin';
-
-        // Redirect the user
-        this.router.navigate([redirect]);
+        this.navigateDefault();
       }
     });
   }
@@ -56,10 +51,20 @@ export class LoginComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.setMessage();
+    this.navigateDefault();
   }
 
   cancel() {
     this.closePopup();
+  }
+
+  navigateDefault() {
+        // Get the redirect URL from our auth service
+        // If no redirect has been set, use the default
+        const redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+
+        // Redirect the user
+        // this.router.navigate([redirect]);
   }
 
   closePopup() {

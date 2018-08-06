@@ -9,7 +9,6 @@ import { InMemoryDataService } from './in-memory-data.service';
 import { AppComponent } from './app.component';
 import { MessagesComponent } from './messages/messages.component';
 import { AppRoutingModule } from './app-routing.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { UsersRoutingModule } from './user-area/users-routing.module';
 import { UserListComponent } from './user-area/user-list/user-list.component';
@@ -26,6 +25,8 @@ import { AdminModule } from './admin/admin.module';
 import { LoginComponent } from './login/login.component';
 import { AuthComponent } from './auth/auth.component';
 import { LogoutComponent } from './logout/logout.component';
+import { HelpComponent } from './help/help.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -34,14 +35,15 @@ import { LogoutComponent } from './logout/logout.component';
     UserListComponent,
     UserDetailComponent,
     MessagesComponent,
-    DashboardComponent,
     UserSearchComponent,
     PalliativeListComponent,
     PalliativeDetailComponent,
     PalliativeSearchComponent,
     LoginComponent,
     AuthComponent,
-    LogoutComponent
+    LogoutComponent,
+    HelpComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,

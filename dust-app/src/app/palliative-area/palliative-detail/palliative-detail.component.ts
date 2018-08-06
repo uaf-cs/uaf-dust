@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Palliative, DustColumnDataPoint, DustColumnGraphType } from '../palliative';
 import { PalliativeService } from '../palliative.service';
 import { User } from '../../user-area/user';
 import { UserService } from '../../user-area/user.service';
+import { AuthService } from '../../auth.service';
 // import * as Plotly from 'plotly.js';
 declare var Plotly: any;
 
@@ -19,17 +20,20 @@ export class PalliativeDetailComponent implements OnInit {
   dataVisible = false;
   graphVisible = false;
   textboxText = '';
+  technicianView = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private palliativeService: PalliativeService,
+    private authService: AuthService,
     private userService: UserService,
     private location: Location
   ) { }
 
   ngOnInit() {
     this.getPalliative();
+    this.router.onSameUrlNavigation = "reload";
   }
 
   getUser(): void {
@@ -66,8 +70,14 @@ export class PalliativeDetailComponent implements OnInit {
     this.router.navigate(['/palliatives']);
   }
 
+  edit(): void {
+    this.technicianView = true;
+  }
+
   cancel(): void {
-    this.gotoPalliatives();
+    this.technicianView = false;
+    this.getPalliative();
+    // this.gotoPalliatives();
   }
 
   showData() {
