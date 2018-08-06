@@ -21,7 +21,7 @@ export class PalliativeService {
     private messageService: MessageService
   ) {
     let url: string = window.location.href;
-    if (url.search(/localhost/) < 0) {
+    if (url.search(/localhost/) >= 0) {
       this.serviceUrl = DevServiceUrl + PhpServiceUrl + PalliativesUrl;
     } else {
       this.serviceUrl = BaseServiceUrl + PhpServiceUrl + PalliativesUrl;

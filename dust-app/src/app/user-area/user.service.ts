@@ -25,7 +25,7 @@ export class UserService {
     private router: Router
   ) {
     let url: string = window.location.href;
-    if (url.search(/localhost/) < 0) {
+    if (url.search(/localhost/) >= 0) {
       this.serviceUrl = DevServiceUrl + PhpServiceUrl + UsersUrl;
     } else {
       this.serviceUrl = BaseServiceUrl + PhpServiceUrl + UsersUrl;

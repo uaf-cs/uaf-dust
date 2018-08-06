@@ -1783,7 +1783,7 @@ var PalliativeService = /** @class */ (function () {
         this.messageService = messageService;
         this.serviceUrl = '/dust.php/palliatives';
         var url = window.location.href;
-        if (url.search(/localhost/) < 0) {
+        if (url.search(/localhost/) >= 0) {
             this.serviceUrl = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["DevServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PalliativesUrl"];
         }
         else {
@@ -2710,7 +2710,7 @@ var UserService = /** @class */ (function () {
         this.serviceUrl = '/dust.php/users';
         this.lastUserId = 0;
         var url = window.location.href;
-        if (url.search(/localhost/) < 0) {
+        if (url.search(/localhost/) >= 0) {
             this.serviceUrl = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["DevServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["UsersUrl"];
         }
         else {
