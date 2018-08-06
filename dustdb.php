@@ -1,6 +1,6 @@
 <?php
     class User {
-        function User() {
+        function __construct() {
             $this->id = 0;
             $this->username = 'nobody';
             $this->password = 'password';
@@ -50,7 +50,7 @@
     }
 
     class Palliative {
-        function Palliative() {
+        function __construct() {
             $this->id = 0;
             $this->fkuser = 0;
             $this->testid = '';

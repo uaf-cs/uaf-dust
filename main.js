@@ -1758,6 +1758,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _messages_message_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../messages/message.service */ "./src/app/messages/message.service.ts");
+/* harmony import */ var _serviceUrls__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../serviceUrls */ "./src/app/serviceUrls.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1772,6 +1773,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var httpOptions = {
     headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HttpHeaders"]({ 'Content-Type': 'application/json' })
 };
@@ -1781,8 +1783,11 @@ var PalliativeService = /** @class */ (function () {
         this.messageService = messageService;
         this.serviceUrl = '/dust.php/palliatives';
         var url = window.location.href;
-        if (url.search(/localhost/)) {
-            this.serviceUrl = 'http://localhost:8000' + this.serviceUrl;
+        if (url.search(/localhost/) < 0) {
+            this.serviceUrl = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["DevServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PalliativesUrl"];
+        }
+        else {
+            this.serviceUrl = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["BaseServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PalliativesUrl"];
         }
     }
     PalliativeService.prototype.getPalliative = function (id) {
@@ -2348,6 +2353,31 @@ var PalliativesRoutingModule = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/serviceUrls.ts":
+/*!********************************!*\
+  !*** ./src/app/serviceUrls.ts ***!
+  \********************************/
+/*! exports provided: UsersUrl, PalliativesUrl, AuthUrl, PhpServiceUrl, BaseServiceUrl, DevServiceUrl */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UsersUrl", function() { return UsersUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PalliativesUrl", function() { return PalliativesUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthUrl", function() { return AuthUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PhpServiceUrl", function() { return PhpServiceUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseServiceUrl", function() { return BaseServiceUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DevServiceUrl", function() { return DevServiceUrl; });
+var UsersUrl = '/users';
+var PalliativesUrl = '/palliatives';
+var AuthUrl = '/auth';
+var PhpServiceUrl = '/dust.php';
+var BaseServiceUrl = 'https://uafdust.azurewebsites.net';
+var DevServiceUrl = 'http://localhost:8000';
+
+
+/***/ }),
+
 /***/ "./src/app/user-area/user-detail/user-detail.component.css":
 /*!*****************************************************************!*\
   !*** ./src/app/user-area/user-detail/user-detail.component.css ***!
@@ -2651,7 +2681,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _messages_message_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../messages/message.service */ "./src/app/messages/message.service.ts");
+/* harmony import */ var _serviceUrls__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../serviceUrls */ "./src/app/serviceUrls.ts");
+/* harmony import */ var _messages_message_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../messages/message.service */ "./src/app/messages/message.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2661,6 +2692,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -2678,8 +2710,11 @@ var UserService = /** @class */ (function () {
         this.serviceUrl = '/dust.php/users';
         this.lastUserId = 0;
         var url = window.location.href;
-        if (url.search(/localhost/)) {
-            this.serviceUrl = 'http://localhost:8000' + this.serviceUrl;
+        if (url.search(/localhost/) < 0) {
+            this.serviceUrl = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["DevServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["UsersUrl"];
+        }
+        else {
+            this.serviceUrl = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["BaseServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["UsersUrl"];
         }
     }
     UserService.prototype.getUser = function (id) {
@@ -2751,7 +2786,7 @@ var UserService = /** @class */ (function () {
             providedIn: 'root'
         }),
         __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClient"],
-            _messages_message_service__WEBPACK_IMPORTED_MODULE_5__["MessageService"],
+            _messages_message_service__WEBPACK_IMPORTED_MODULE_6__["MessageService"],
             _angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"]])
     ], UserService);
     return UserService;

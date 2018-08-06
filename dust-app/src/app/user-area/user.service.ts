@@ -3,6 +3,7 @@ import { Router, UrlHandlingStrategy } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BaseServiceUrl, DevServiceUrl, PhpServiceUrl, UsersUrl } from '../serviceUrls';
 
 import { User } from './user';
 import { MessageService } from '../messages/message.service';
@@ -24,8 +25,10 @@ export class UserService {
     private router: Router
   ) {
     let url: string = window.location.href;
-    if (url.search(/localhost/)) {
-      this.serviceUrl = 'http://localhost:8000' + this.serviceUrl;
+    if (url.search(/localhost/) < 0) {
+      this.serviceUrl = DevServiceUrl + PhpServiceUrl + UsersUrl;
+    } else {
+      this.serviceUrl = BaseServiceUrl + PhpServiceUrl + UsersUrl;
     }
   }
 

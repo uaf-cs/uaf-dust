@@ -4,6 +4,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessageService } from '../messages/message.service';
 import { Palliative } from './palliative';
+import { PalliativesUrl, DevServiceUrl, PhpServiceUrl, BaseServiceUrl } from '../serviceUrls';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,8 +21,10 @@ export class PalliativeService {
     private messageService: MessageService
   ) {
     let url: string = window.location.href;
-    if (url.search(/localhost/)) {
-      this.serviceUrl = 'http://localhost:8000' + this.serviceUrl;
+    if (url.search(/localhost/) < 0) {
+      this.serviceUrl = DevServiceUrl + PhpServiceUrl + PalliativesUrl;
+    } else {
+      this.serviceUrl = BaseServiceUrl + PhpServiceUrl + PalliativesUrl;
     }
   }
 
