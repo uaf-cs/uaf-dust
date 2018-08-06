@@ -16,7 +16,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserService {
-  private serviceUrl = '/dust.php/users';
+  private serviceUrl = '';
   lastUserId = 0;
 
   constructor(

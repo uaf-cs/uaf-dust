@@ -855,6 +855,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _messages_message_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./messages/message.service */ "./src/app/messages/message.service.ts");
+/* harmony import */ var _serviceUrls__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./serviceUrls */ "./src/app/serviceUrls.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -864,6 +865,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -889,7 +891,14 @@ var DustDBService = /** @class */ (function () {
     function DustDBService(http, messageService) {
         this.http = http;
         this.messageService = messageService;
-        this.url = 'http://localhost:8000/admin.php';
+        this.url = '';
+        var url = window.location.href;
+        if (url.search(/localhost/) >= 0) {
+            this.url = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["DevServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpAdminUrl"];
+        }
+        else {
+            this.url = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["BaseServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpAdminUrl"];
+        }
     }
     /**
      * Send POST message to initialize database
@@ -1889,7 +1898,7 @@ var PalliativeService = /** @class */ (function () {
     function PalliativeService(http, messageService) {
         this.http = http;
         this.messageService = messageService;
-        this.serviceUrl = '/dust.php/palliatives';
+        this.serviceUrl = '';
         var url = window.location.href;
         if (url.search(/localhost/) >= 0) {
             this.serviceUrl = _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["DevServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PhpServiceUrl"] + _serviceUrls__WEBPACK_IMPORTED_MODULE_5__["PalliativesUrl"];
@@ -2465,7 +2474,7 @@ var PalliativesRoutingModule = /** @class */ (function () {
 /*!********************************!*\
   !*** ./src/app/serviceUrls.ts ***!
   \********************************/
-/*! exports provided: UsersUrl, PalliativesUrl, AuthUrl, PhpServiceUrl, BaseServiceUrl, DevServiceUrl */
+/*! exports provided: UsersUrl, PalliativesUrl, AuthUrl, PhpServiceUrl, PhpAdminUrl, BaseServiceUrl, DevServiceUrl */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2474,14 +2483,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PalliativesUrl", function() { return PalliativesUrl; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthUrl", function() { return AuthUrl; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PhpServiceUrl", function() { return PhpServiceUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PhpAdminUrl", function() { return PhpAdminUrl; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BaseServiceUrl", function() { return BaseServiceUrl; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DevServiceUrl", function() { return DevServiceUrl; });
 var UsersUrl = '/users';
 var PalliativesUrl = '/palliatives';
 var AuthUrl = '/auth';
 var PhpServiceUrl = '/dust.php';
+var PhpAdminUrl = '/admin.php';
 var BaseServiceUrl = 'https://uafdust.azurewebsites.net';
-var DevServiceUrl = 'http://localhost:8000';
+var DevServiceUrl = 'https://localhost:8000';
 
 
 /***/ }),
@@ -2835,7 +2846,7 @@ var UserService = /** @class */ (function () {
         this.http = http;
         this.messageService = messageService;
         this.router = router;
-        this.serviceUrl = '/dust.php/users';
+        this.serviceUrl = '';
         this.lastUserId = 0;
         var url = window.location.href;
         if (url.search(/localhost/) >= 0) {

@@ -4,6 +4,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { MessageService } from './messages/message.service';
+import { DevServiceUrl, PhpAdminUrl, BaseServiceUrl } from './serviceUrls';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -21,12 +22,19 @@ export class DustDBServiceRequest {
   providedIn: 'root'
 })
 export class DustDBService {
-  private url = 'http://localhost:8000/admin.php';
+  private url = '';
 
   constructor(
     private http: HttpClient,
     private messageService: MessageService
-  ) { }
+  ) {
+    let url: string = window.location.href;
+    if (url.search(/localhost/) >= 0) {
+      this.url = DevServiceUrl + PhpAdminUrl;
+    } else {
+      this.url = BaseServiceUrl + PhpAdminUrl;
+    }
+  }
 
   /**
    * Send POST message to initialize database
