@@ -20,7 +20,11 @@
     // }
 
     $db = new DustDB();
-
+    if (!$db) {
+        http_response_code(404);
+        die(json_encode($db->lastErrorMsg()));
+    }
+    
     class RequestResponse {
         function __construct() {
             $this->request = '';

@@ -98,7 +98,7 @@
 
     if (!$result) {
         http_response_code(404);
-        die(json_encode($lastErrorMsg));
+        die(json_encode($lastErrorMsg + "<br/>" + $sql));
     }
 
 
