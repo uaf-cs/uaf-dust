@@ -107,15 +107,17 @@
         $sql = "SELECT * FROM `$table`" . ($key ? " WHERE id=$key" : '');
         $result = $db->query($sql);
     }
-    if (!$key) echo '[';
+    $isArray = false;
+    if (!$key) $isArray = true;
+    if ($isArray) echo '[';
     $i = 0;
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         if ($i++ != 0) echo ", ";
-        if (array_key_exists('data', $row)) {
-            $row['data'] = json_decode($row['data']);
-        }
-        foreach ($row as $key => &$value) {
-            if ($row == 'data') {
+        // if (array_key_exists('data', $row)) {
+        //     $row['data'] = json_decode($row['data']);
+        // }
+        foreach ($row as $akey => &$value) {
+            if ($akey == 'data') {
                 $value = json_decode($value);
             } else {
                 $value = str_replace('\'\'', '\'', $value);
@@ -123,5 +125,5 @@
         }
         echo json_encode($row);
     }
-    if (!$key) echo ']';
+    if ($isArray)  echo ']';
 ?>
