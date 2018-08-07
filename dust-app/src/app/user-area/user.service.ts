@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, UrlHandlingStrategy } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, retry } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BaseServiceUrl, DevServiceUrl, PhpServiceUrl, UsersUrl } from '../serviceUrls';
 
@@ -39,6 +39,7 @@ export class UserService {
     this.lastUserId = id;
     const url = `${this.serviceUrl}/${id}`;
     return this.http.get<User>(url).pipe(
+      retry(3),
       // tap(_ => this.log(`fetched user id=${id}`)),
       catchError(this.handleError<User>(`getUser id=${id}`))
     );
@@ -49,6 +50,7 @@ export class UserService {
     // return of(USERS);
     return this.http.get<User[]>(this.serviceUrl)
       .pipe(
+        retry(3),
         // tap(users => this.log('fetched users')),
         catchError(this.handleError('getUsers', []))
       );
@@ -59,6 +61,7 @@ export class UserService {
     const id = user.id;
     const url = `${this.serviceUrl}/${id}`;
     return this.http.put(url, user, httpOptions).pipe(
+      retry(3),
       tap(_ => this.log(`updated user id=${user.id}`)),
       catchError(this.handleError<any>('updateUser'))
     );
@@ -78,6 +81,7 @@ export class UserService {
     const url = `${this.serviceUrl}/${id}`;
 
     return this.http.delete<User>(url, httpOptions).pipe(
+      retry(3),
       tap(_ => this.log(`deleted user id=${id}`)),
       catchError(this.handleError<User>('deleteUser'))
     );
@@ -91,6 +95,7 @@ export class UserService {
     }
     return this.http.get<User[]>(`${this.serviceUrl}/?name=${term}`)
       .pipe(
+        retry(3),
         // tap(_ => this.log(`found users matching "${term}"`)),
         catchError(this.handleError<User[]>('searchUsers', []))
       );

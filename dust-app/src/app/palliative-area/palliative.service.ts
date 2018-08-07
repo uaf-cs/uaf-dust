@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, retry } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessageService } from '../messages/message.service';
 import { Palliative } from './palliative';
@@ -31,6 +31,7 @@ export class PalliativeService {
   getPalliative(id: number): Observable<Palliative> {
     const url = `${this.serviceUrl}/${id}`;
     return this.http.get<Palliative>(url).pipe(
+      retry(3),
       // tap(_ => this.log(`fetched palliative id=${id}`)),
       catchError(this.handleError<Palliative>(`getPalliative id=${id}`))
     );
@@ -39,6 +40,7 @@ export class PalliativeService {
   getPalliatives(): Observable<Palliative[]> {
     return this.http.get<Palliative[]>(this.serviceUrl)
       .pipe(
+        retry(3),
         // tap(palliatives => this.log('fetched palliatives')),
         catchError(this.handleError('getPalliatives', []))
       );
@@ -47,6 +49,7 @@ export class PalliativeService {
   /** PUT: update the palliative on the server */
   updatePalliative(palliative: Palliative): Observable<any> {
     return this.http.put(this.serviceUrl + `/${palliative.id}`, palliative, httpOptions).pipe(
+      retry(3),
       tap(_ => this.log(`updated palliative id=${palliative.id}`)),
       catchError(this.handleError<any>('updatePalliative'))
     );
@@ -66,6 +69,7 @@ export class PalliativeService {
     const url = `${this.serviceUrl}/${id}`;
 
     return this.http.delete<Palliative>(url, httpOptions).pipe(
+      retry(3),
       tap(_ => this.log(`deleted palliative id=${id}`)),
       catchError(this.handleError<Palliative>('deletePalliative'))
     );
@@ -79,6 +83,7 @@ export class PalliativeService {
     }
     return this.http.get<Palliative[]>(`${this.serviceUrl}/?shortname=${term}`)
       .pipe(
+        retry(3),
         // tap(_ => this.log(`found palliatives matching "${term}"`)),
         catchError(this.handleError<Palliative[]>('searchPalliatives', []))
       );
