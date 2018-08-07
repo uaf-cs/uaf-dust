@@ -262,7 +262,7 @@ ul.search-result {
   /* position: top center absolute; */
   background: #bcd;
   border-radius: 4px;
-  width: 512px;
+  width: 320px;
   margin: auto;
   box-shadow: 10px 10px 5px #345;
   /* margin-top: 100px; */
@@ -313,4 +313,25 @@ td.description {
 
 .dataPoint {
   height: 1em;
+}
+
+.wrap {
+  width: 80%;
+  min-width: 20em;
+  max-width: 100em;
+}
+
+figure {
+  width: 30%;
+  text-align: center;
+  font-style: italic;
+  font-size: smaller;
+  text-indent: 0;
+  border: thin silver solid;
+  margin: 0.5em;
+  padding: 0.5em;
+}
+
+img.scaled {
+  width: 100%;
 }
