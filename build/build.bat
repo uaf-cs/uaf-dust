@@ -4,6 +4,7 @@ cmd /c "ng build"
 del ..\*.js
 del ..\*.map
 copy dist\dust-app\*.* ..
+copy dist\dust-app\assets\*.* ..\assets
 cd ..\dust-service
 copy dust.php ..
 copy dustdb.php ..
