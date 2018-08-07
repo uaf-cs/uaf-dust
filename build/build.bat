@@ -1,6 +1,6 @@
 REM @ECHO OFF
 cd ..\dust-app
-cmd /c "ng build --prod"
+cmd /c "ng build --prod --build-optimizer"
 del ..\*.js
 del ..\*.map
 copy dist\dust-app\*.* ..
