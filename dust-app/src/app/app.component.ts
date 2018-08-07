@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   title = 'Dust Palliative MPRT Calculator';
   signedInUser = 'nobody';
 
-  constructor(private authService: AuthService) { }
+  constructor(public authService: AuthService) { }
 
   ngOnInit() {
     this.signedInUser = (this.authService.isLoggedIn ? 'somebody' : 'Log in');

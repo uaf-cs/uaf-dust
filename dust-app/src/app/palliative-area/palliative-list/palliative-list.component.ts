@@ -14,7 +14,7 @@ export class PalliativeListComponent implements OnInit {
 
   constructor(
     private palliativeService: PalliativeService,
-    private authService: AuthService
+    public authService: AuthService
   ) { }
 
   ngOnInit() {
