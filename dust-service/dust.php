@@ -11,7 +11,7 @@
     // This came from https://www.leaseweb.com/labs/2015/10/creating-a-simple-rest-api-in-php/
     // under an MIT License.
     $method = $_SERVER['REQUEST_METHOD'];
-    $request = explode('/', trim($_SERVER['PATH_INFO'], '/'));
+    $request = isset($_SERVER['PATH_INFO']) ? explode('/', trim($_SERVER['PATH_INFO'], '/')) : array();
     $fileContents = file_get_contents('php://input');
     $input = json_decode($fileContents, true);
 

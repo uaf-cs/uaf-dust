@@ -42,7 +42,7 @@
         // die('function not found');
         $rr->response = 'function not found';
     } else {
-        $request = key_exists('PATH_INFO', $_SERVER) ? explode('/', trim($_SERVER['PATH_INFO'], '/')) : array();
+        $request = isset($_SERVER['PATH_INFO']) ? explode('/', trim($_SERVER['PATH_INFO'], '/')) : array();
         $fileContents = file_get_contents('php://input');
         $input = json_decode($fileContents, true);
         $rr->response = "success";
