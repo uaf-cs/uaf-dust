@@ -114,8 +114,8 @@
         // if (array_key_exists('data', $row)) {
         //     $row['data'] = json_decode($row['data']);
         // }
-        foreach ($row as $key => &$value) {
-            if ($row == 'data') {
+        foreach ($row as $akey => &$value) {
+            if ($akey == 'data') {
                 $value = json_decode($value);
             } else {
                 $value = str_replace('\'\'', '\'', $value);
