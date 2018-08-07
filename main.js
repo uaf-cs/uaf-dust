@@ -1473,7 +1473,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"palliative\">\r\n\r\n  <h1>\"{{palliative.shortname | uppercase}}\" Details</h1>\r\n  <h2>\"{{palliative.longname}}\"</h2>\r\n  <table class=\"altcolors\"><tbody class=\"altcolors\">\r\n    <tr><td><label>id:</label></td><td class=\"description\">{{palliative.id}}</td></tr>\r\n    <tr><td><label>Test ID:</label></td><td class=\"description\">{{palliative.testid}}</td></tr>\r\n    <tr><td><label>Description:</label></td><td class=\"description\">{{palliative.description}}</td></tr>\r\n    <tr><td><label>userid:</label></td><td>{{palliative.userid}}<span *ngIf=\"user\"> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif;\">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif; font-style: italic;\">t</span></label></td><td>{{palliative.mprtTime}}</td></tr>\r\n  </tbody>\r\n  </table>\r\n\r\n  <div class=\"mprtGraph\">\r\n    <label>MPRT <span style=\"font-family: serif;\">&tau;</span> Graph</label>\r\n    <button *ngIf=\"!graphVisible\" (click)=\"showGraph()\">show</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"hideGraph()\">hide</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"plotGraph()\">plot</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"calcMPRT()\">calc mprt</button>\r\n    <div *ngIf=\"graphVisible\">\r\n      <div id=\"mprtGraphC\"></div>\r\n      <div id=\"mprtGraphLnC\"></div>\r\n      <div id=\"mprtGraphDeriv1\"></div>\r\n      <div id=\"mprtGraphDeriv2\"></div>\r\n      <div id=\"mprtGraphRSQ\"></div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"dataPointList\">\r\n    <label>Data Points</label>\r\n      <button *ngIf=\"!dataVisible\" (click)=\"showData()\">show</button>\r\n      <button *ngIf=\"dataVisible\" (click)=\"hideData()\">hide</button>\r\n    \r\n    <table *ngIf=\"dataVisible\">\r\n      <tbody class=\"altcolors\">\r\n      <tr><th>t</th><th>C</th><th>ln(C)</th><th>C'(t)</th><th>C''(t)</th><th>R^2</th></tr>\r\n      <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n        <td>{{dp.t | number}}</td>\r\n        <td>{{dp.C | number}}</td>\r\n        <td>{{dp.lnC | number}}</td>\r\n        <td>{{dp.dCdt | number}}</td>\r\n        <td>{{dp.deriv2 | number}}</td>\r\n        <td>{{dp.rsq | number}}</td>\r\n      </tr>\r\n    </tbody>\r\n    </table>\r\n  </div>\r\n  \r\n  <button *ngIf=\"!technicianView && authService.isTechnician\" (click)=\"edit()\">Edit</button>\r\n\r\n  <div *ngIf=\"technicianView\">\r\n    <h1>Edit Details</h1>\r\n    <div><label>Test ID:</label>&nbsp;<input [(ngModel)]=\"palliative.testid\" placeholder=\"testid\"/></div>\r\n    <div><label>Short Name:</label>&nbsp;<input [(ngModel)]=\"palliative.shortname\" placeholder=\"shortname\"/></div>\r\n    <div><label>Long Name:</label>&nbsp;<input [(ngModel)]=\"palliative.longname\" placeholder=\"longname\"/></div>\r\n    <div><label>Description:</label>&nbsp;<input [(ngModel)]=\"palliative.description\" placeholder=\"description\"/></div>\r\n    <div><label>User Id:</label>&nbsp;<input [(ngModel)]=\"palliative.userid\" placeholder=\"userid\"/></div>\r\n\r\n    <button (click)=\"save()\">save</button>\r\n    <button (click)=\"cancel()\">cancel</button>\r\n    <button (click)=\"cleanData()\">clean</button>\r\n\r\n    <div class=\"dataPointList padded\">\r\n      <h3>Data Points</h3>\r\n      <br/><textarea [(ngModel)]=\"textboxText\" cols=\"40\" rows=\"10\">{{textboxText}}</textarea>\r\n      <br/><button (click)=\"importCSV()\">import CSV</button>\r\n      <table>\r\n        <tr><th>t</th><th>C</th></tr>\r\n        <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n          <td><input [(ngModel)]=\"dp.t\"/></td>\r\n          <td><input [(ngModel)]=\"dp.C\"/></td>\r\n        </tr>\r\n      </table>\r\n      <button (click)=\"addDatapoint()\">add datapoint</button>\r\n    </div>\r\n\r\n  </div>\r\n\r\n</div>\r\n"
+module.exports = "<div *ngIf=\"palliative\">\r\n\r\n  <h1>\"{{palliative.shortname | uppercase}}\" Details</h1>\r\n  <h2>\"{{palliative.longname}}\"</h2>\r\n  <table class=\"altcolors\"><tbody class=\"altcolors\">\r\n    <tr><td><label>id:</label></td><td class=\"description\">{{palliative.id}}</td></tr>\r\n    <tr><td><label>Test ID:</label></td><td class=\"description\">{{palliative.testid}}</td></tr>\r\n    <tr><td><label>Description:</label></td><td class=\"description\">{{palliative.description}}</td></tr>\r\n    <tr><td><label>userid:</label></td><td>{{palliative.userid}}<span *ngIf=\"user\"> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif;\">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr>\r\n    <tr><td><label>mprt <span style=\"font-family: serif; font-style: italic;\">t</span></label></td><td>{{palliative.mprtTime}}</td></tr>\r\n  </tbody>\r\n  </table>\r\n\r\n  <div class=\"mprtGraph\">\r\n    <label>MPRT <span style=\"font-family: serif;\">&tau;</span> Graph</label>\r\n    <button *ngIf=\"!graphVisible\" (click)=\"showGraph()\">show</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"hideGraph()\">hide</button>\r\n    <button *ngIf=\"graphVisible\" (click)=\"plotGraph()\">plot</button>\r\n    <div *ngIf=\"graphVisible\">\r\n      <div id=\"mprtGraphC\"></div>\r\n      <div id=\"mprtGraphLnC\"></div>\r\n      <div id=\"mprtGraphDeriv1\"></div>\r\n      <div id=\"mprtGraphDeriv2\"></div>\r\n      <div id=\"mprtGraphRSQ\"></div>\r\n    </div>\r\n  </div>\r\n\r\n  <div class=\"dataPointList\">\r\n    <label>Data Points</label>\r\n      <button *ngIf=\"!dataVisible\" (click)=\"showData()\">show</button>\r\n      <button *ngIf=\"dataVisible\" (click)=\"hideData()\">hide</button>\r\n    \r\n    <table *ngIf=\"dataVisible\">\r\n      <tbody class=\"altcolors\">\r\n      <tr><th>t</th><th>C</th><th>ln(C)</th><th>C'(t)</th><th>C''(t)</th><th>R^2</th></tr>\r\n      <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n        <td>{{dp.t | number}}</td>\r\n        <td>{{dp.C | number}}</td>\r\n        <td>{{dp.lnC | number}}</td>\r\n        <td>{{dp.dCdt | number}}</td>\r\n        <td>{{dp.deriv2 | number}}</td>\r\n        <td>{{dp.rsq | number}}</td>\r\n      </tr>\r\n    </tbody>\r\n    </table>\r\n  </div>\r\n  \r\n  <button *ngIf=\"!technicianView && authService.isTechnician\" (click)=\"edit()\">Edit</button>\r\n\r\n  <div *ngIf=\"technicianView\">\r\n    <h1>Edit Details</h1>\r\n    <div><label>Test ID:</label>&nbsp;<input [(ngModel)]=\"palliative.testid\" placeholder=\"testid\"/></div>\r\n    <div><label>Short Name:</label>&nbsp;<input [(ngModel)]=\"palliative.shortname\" placeholder=\"shortname\"/></div>\r\n    <div><label>Long Name:</label>&nbsp;<input [(ngModel)]=\"palliative.longname\" placeholder=\"longname\"/></div>\r\n    <div><label>Description:</label>&nbsp;<input [(ngModel)]=\"palliative.description\" placeholder=\"description\"/></div>\r\n    <div><label>User Id:</label>&nbsp;<input [(ngModel)]=\"palliative.userid\" placeholder=\"userid\"/></div>\r\n\r\n    <button (click)=\"save()\">save</button>\r\n    <button (click)=\"cancel()\">cancel</button>\r\n    <button (click)=\"cleanData()\">clean</button>\r\n    <button (click)=\"calcMPRT()\">calc mprt</button>\r\n    \r\n    <div class=\"dataPointList padded\">\r\n      <h3>Data Points</h3>\r\n      <br/><textarea [(ngModel)]=\"textboxText\" cols=\"40\" rows=\"10\">{{textboxText}}</textarea>\r\n      <br/><button (click)=\"importCSV()\">import CSV</button>\r\n      <table>\r\n        <tr><th>t</th><th>C</th></tr>\r\n        <tr *ngFor=\"let dp of palliative.data\" class=\"dataPoint\">\r\n          <td><input [(ngModel)]=\"dp.t\"/></td>\r\n          <td><input [(ngModel)]=\"dp.C\"/></td>\r\n        </tr>\r\n      </table>\r\n      <button (click)=\"addDatapoint()\">add datapoint</button>\r\n    </div>\r\n\r\n  </div>\r\n\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1552,7 +1552,7 @@ var PalliativeDetailComponent = /** @class */ (function () {
     PalliativeDetailComponent.prototype.save = function () {
         var _this = this;
         this.palliativeService.updatePalliative(this.palliative)
-            .subscribe(function () { return _this.gotoPalliatives(); });
+            .subscribe(function () { return _this.getPalliative(); });
     };
     PalliativeDetailComponent.prototype.goBack = function () {
         this.location.back();
@@ -1908,14 +1908,16 @@ var PalliativeService = /** @class */ (function () {
         }
     }
     PalliativeService.prototype.getPalliative = function (id) {
-        var _this = this;
         var url = this.serviceUrl + "/" + id;
-        return this.http.get(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(function (_) { return _this.log("fetched palliative id=" + id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])(this.handleError("getPalliative id=" + id)));
+        return this.http.get(url).pipe(
+        // tap(_ => this.log(`fetched palliative id=${id}`)),
+        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])(this.handleError("getPalliative id=" + id)));
     };
     PalliativeService.prototype.getPalliatives = function () {
-        var _this = this;
         return this.http.get(this.serviceUrl)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(function (palliatives) { return _this.log('fetched palliatives'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])(this.handleError('getPalliatives', [])));
+            .pipe(
+        // tap(palliatives => this.log('fetched palliatives')),
+        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])(this.handleError('getPalliatives', [])));
     };
     /** PUT: update the palliative on the server */
     PalliativeService.prototype.updatePalliative = function (palliative) {
@@ -1936,13 +1938,14 @@ var PalliativeService = /** @class */ (function () {
     };
     /** GET palliatives whose name contains search term */
     PalliativeService.prototype.searchPalliatives = function (term) {
-        var _this = this;
         if (!term.trim()) {
             // if not search term, return empty palliative array
             return Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["of"])([]);
         }
         return this.http.get(this.serviceUrl + "/?shortname=" + term)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(function (_) { return _this.log("found palliatives matching \"" + term + "\""); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])(this.handleError('searchPalliatives', [])));
+            .pipe(
+        // tap(_ => this.log(`found palliatives matching "${term}"`)),
+        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])(this.handleError('searchPalliatives', [])));
     };
     /**
      * Handle Http operation that failed.
@@ -2492,7 +2495,7 @@ var AuthUrl = '/auth';
 var PhpServiceUrl = '/dust.php';
 var PhpAdminUrl = '/admin.php';
 var BaseServiceUrl = 'https://uafdust.azurewebsites.net';
-var DevServiceUrl = 'https://localhost:8000';
+var DevServiceUrl = 'http://localhost:8000';
 
 
 /***/ }),
@@ -2859,17 +2862,19 @@ var UserService = /** @class */ (function () {
     UserService.prototype.getUser = function (id) {
         // this.messageService.add(`UserService: fetched user id = ${id}`);
         // return of(USERS.find(user => user.id === id));
-        var _this = this;
         this.lastUserId = id;
         var url = this.serviceUrl + "/" + id;
-        return this.http.get(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("fetched user id=" + id); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getUser id=" + id)));
+        return this.http.get(url).pipe(
+        // tap(_ => this.log(`fetched user id=${id}`)),
+        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getUser id=" + id)));
     };
     UserService.prototype.getUsers = function () {
-        var _this = this;
         // this.messageService.add('UserService: fetched users');
         // return of(USERS);
         return this.http.get(this.serviceUrl)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (users) { return _this.log('fetched users'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getUsers', [])));
+            .pipe(
+        // tap(users => this.log('fetched users')),
+        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getUsers', [])));
     };
     /** PUT: update the user on the server */
     UserService.prototype.updateUser = function (user) {
@@ -2892,13 +2897,14 @@ var UserService = /** @class */ (function () {
     };
     /** GET users whose name contains search term */
     UserService.prototype.searchUsers = function (term) {
-        var _this = this;
         if (!term.trim()) {
             // if not search term, return empty user array
             return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])([]);
         }
         return this.http.get(this.serviceUrl + "/?name=" + term)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (_) { return _this.log("found users matching \"" + term + "\""); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('searchUsers', [])));
+            .pipe(
+        // tap(_ => this.log(`found users matching "${term}"`)),
+        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('searchUsers', [])));
     };
     /**
      * Handle Http operation that failed.

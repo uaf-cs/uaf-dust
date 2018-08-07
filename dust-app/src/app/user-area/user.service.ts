@@ -39,7 +39,7 @@ export class UserService {
     this.lastUserId = id;
     const url = `${this.serviceUrl}/${id}`;
     return this.http.get<User>(url).pipe(
-      tap(_ => this.log(`fetched user id=${id}`)),
+      // tap(_ => this.log(`fetched user id=${id}`)),
       catchError(this.handleError<User>(`getUser id=${id}`))
     );
   }
@@ -49,7 +49,7 @@ export class UserService {
     // return of(USERS);
     return this.http.get<User[]>(this.serviceUrl)
       .pipe(
-        tap(users => this.log('fetched users')),
+        // tap(users => this.log('fetched users')),
         catchError(this.handleError('getUsers', []))
       );
   }
@@ -91,7 +91,7 @@ export class UserService {
     }
     return this.http.get<User[]>(`${this.serviceUrl}/?name=${term}`)
       .pipe(
-        tap(_ => this.log(`found users matching "${term}"`)),
+        // tap(_ => this.log(`found users matching "${term}"`)),
         catchError(this.handleError<User[]>('searchUsers', []))
       );
   }

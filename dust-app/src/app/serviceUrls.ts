@@ -6,4 +6,4 @@ export const AuthUrl = '/auth';
 export const PhpServiceUrl = '/dust.php';
 export const PhpAdminUrl = '/admin.php';
 export const BaseServiceUrl = 'https://uafdust.azurewebsites.net';
-export const DevServiceUrl = 'https://localhost:8000';
+export const DevServiceUrl = 'http://localhost:8000';

@@ -31,7 +31,7 @@ export class PalliativeService {
   getPalliative(id: number): Observable<Palliative> {
     const url = `${this.serviceUrl}/${id}`;
     return this.http.get<Palliative>(url).pipe(
-      tap(_ => this.log(`fetched palliative id=${id}`)),
+      // tap(_ => this.log(`fetched palliative id=${id}`)),
       catchError(this.handleError<Palliative>(`getPalliative id=${id}`))
     );
   }
@@ -39,7 +39,7 @@ export class PalliativeService {
   getPalliatives(): Observable<Palliative[]> {
     return this.http.get<Palliative[]>(this.serviceUrl)
       .pipe(
-        tap(palliatives => this.log('fetched palliatives')),
+        // tap(palliatives => this.log('fetched palliatives')),
         catchError(this.handleError('getPalliatives', []))
       );
   }
@@ -79,7 +79,7 @@ export class PalliativeService {
     }
     return this.http.get<Palliative[]>(`${this.serviceUrl}/?shortname=${term}`)
       .pipe(
-        tap(_ => this.log(`found palliatives matching "${term}"`)),
+        // tap(_ => this.log(`found palliatives matching "${term}"`)),
         catchError(this.handleError<Palliative[]>('searchPalliatives', []))
       );
   }

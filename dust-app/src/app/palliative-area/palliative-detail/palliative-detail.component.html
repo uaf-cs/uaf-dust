@@ -17,7 +17,6 @@
     <button *ngIf="!graphVisible" (click)="showGraph()">show</button>
     <button *ngIf="graphVisible" (click)="hideGraph()">hide</button>
     <button *ngIf="graphVisible" (click)="plotGraph()">plot</button>
-    <button *ngIf="graphVisible" (click)="calcMPRT()">calc mprt</button>
     <div *ngIf="graphVisible">
       <div id="mprtGraphC"></div>
       <div id="mprtGraphLnC"></div>
@@ -60,7 +59,8 @@
     <button (click)="save()">save</button>
     <button (click)="cancel()">cancel</button>
     <button (click)="cleanData()">clean</button>
-
+    <button (click)="calcMPRT()">calc mprt</button>
+    
     <div class="dataPointList padded">
       <h3>Data Points</h3>
       <br/><textarea [(ngModel)]="textboxText" cols="40" rows="10">{{textboxText}}</textarea>

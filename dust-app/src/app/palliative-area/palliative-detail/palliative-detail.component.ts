@@ -59,7 +59,7 @@ export class PalliativeDetailComponent implements OnInit {
 
   save(): void {
     this.palliativeService.updatePalliative(this.palliative)
-      .subscribe(() => this.gotoPalliatives());
+      .subscribe(() => this.getPalliative());
   }
 
   goBack(): void {
