@@ -104,6 +104,11 @@
 
         <h2>Log</h2>
         <?php
+        function fix_for_html($str) {
+            $a = str_replace("<", "&lt;", $str);
+            $b = str_replace(">", "&gt;", $a);
+            return $b;
+        }
         $db = new DustDB();
         $results = $db->getTable('log');
         echo "\noperation: " . $results['operation'];
