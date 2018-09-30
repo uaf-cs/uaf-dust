@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth.service';
+import { SplashscreenService } from './splashscreen.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,8 @@ export class AppComponent implements OnInit {
   title = 'Dust Palliative MPRT Calculator';
   signedInUser = 'nobody';
 
-  constructor(public authService: AuthService) { }
+  constructor(public authService: AuthService,
+    private splashscreenService: SplashscreenService) { }
 
   ngOnInit() {
     this.signedInUser = (this.authService.isLoggedIn ? 'somebody' : 'Log in');

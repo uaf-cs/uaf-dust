@@ -27,8 +27,21 @@
     Signed in as {{authService.signedInUser}}</span>
 </nav>
 
-<div class="popup"><router-outlet name="popup"></router-outlet></div>
-<div class="mainnav"><router-outlet></router-outlet></div>
+<div class="popup">
+  <router-outlet name="popup">
+  </router-outlet>
+</div>
+
+<div class="splashscreen">
+    <router-outlet name="popup">
+      <app-splashscreen></app-splashscreen>
+    </router-outlet>
+  </div>
+
+<!-- <div *ngIf="splashscreenService.disclaimerAccepted">Accepted</div>
+<div *ngIf="!splashscreenService.disclaimerAccepted">Not Accepted</div> -->
+
+<div class="mainnav" *ngIf="splashscreenService.disclaimerAccepted"><router-outlet></router-outlet></div>
 
 <app-messages></app-messages>
 

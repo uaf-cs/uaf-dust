@@ -27,6 +27,7 @@ import { AuthComponent } from './auth/auth.component';
 import { LogoutComponent } from './logout/logout.component';
 import { HelpComponent } from './help/help.component';
 import { HomeComponent } from './home/home.component';
+import { SplashscreenComponent } from './splashscreen/splashscreen.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { HomeComponent } from './home/home.component';
     LogoutComponent,
     HelpComponent,
     HomeComponent,
+    SplashscreenComponent,
   ],
   imports: [
     BrowserModule,
