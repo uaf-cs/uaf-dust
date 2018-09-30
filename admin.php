@@ -67,8 +67,11 @@
         $rr->response = json_encode($rr->response);
     }
 ?>
+<!DOCTYPE html>
 <html>
-    <head>DustDB Admin Functions</head>
+    <head>
+        <title>DustDB Admin Functions</title>
+    </head>
 
     <body>
         <h2>Request</h2>
