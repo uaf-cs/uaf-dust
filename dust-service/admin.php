@@ -106,9 +106,9 @@
         <?php
         $db = new DustDB();
         $results = $db->getTable('log');
-        echo "operation: " . $results['operation'];
-        echo "<br/>result: " . $results['result'];
-        echo "<br/>results: " . $results['results'];
+        echo "\noperation: " . $results['operation'];
+        echo "\n<br/>\nresult: " . $results['result'];
+        echo "\n<br/>\nresults: " . $results['results'];
         $db->exec('DELETE FROM log;')
         ?>
 </body>
