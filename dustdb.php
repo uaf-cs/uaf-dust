@@ -104,15 +104,20 @@ EOF;
                  log        TEXT);
 
                 CREATE TABLE palliatives
-                (id         INTEGER PRIMARY KEY AUTOINCREMENT,
-                userid      INTEGER,
-                testid      TEXT,
-                shortname   TEXT NOT NULL,
-                longname    TEXT,
-                description TEXT,
-                data        TEXT,
-                mprt        REAL,
-                mprtTime    REAL);
+                (id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                userid       INTEGER,
+                testid       TEXT,
+                shortname    TEXT NOT NULL,
+                longname     TEXT,
+                laboratory   TEXT,
+                testDate     TEXT,
+                testTech     TEXT,
+                analysisDate TEXT,
+                analysisTech TEXT,
+                description  TEXT,
+                data         TEXT,
+                mprt         REAL,
+                mprtTime     REAL);
 EOF;
             $ret = $this->exec($sql);
             if (!$ret) {

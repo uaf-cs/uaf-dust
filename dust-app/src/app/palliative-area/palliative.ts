@@ -169,6 +169,13 @@ export class Palliative {
     mprt: number;
     mprtTime: number;
 
+    // New fields identified
+    testTech: string = "unknown tech";
+    testDate: string = "0000-01-01 00:00:00";
+    analysisTech: string = "unknown tech";
+    analysisDate: string = "0000-01-01 00:00:00";
+    laboratory: string = "unknown laboratory";
+
     static CreateFromJSON(palliative: any): Palliative {
         let p = new Palliative();
         p.id = palliative.id;
@@ -184,6 +191,14 @@ export class Palliative {
         }
         p.mprt = palliative.mprt;
         p.mprtTime = palliative.mprtTime;
+
+        // new fields identified
+        p.testTech = palliative.testTech ? palliative.testTech : p.testTech;
+        p.testDate = palliative.testDate ? palliative.testDate : p.testDate;
+        p.analysisTech = palliative.analysisTech ? palliative.analysisTech : p.analysisTech;
+        p.analysisDate = palliative.analysisDate ? palliative.analysisDate : p.analysisDate;
+        p.laboratory = palliative.laboratory ? palliative.laboratory : p.laboratory;
+
         return p;
     }
 

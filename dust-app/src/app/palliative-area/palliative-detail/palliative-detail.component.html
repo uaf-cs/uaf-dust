@@ -7,6 +7,9 @@
     <tr><td><label>Test ID:</label></td><td class="description">{{palliative.testid}}</td></tr>
     <tr><td><label>Description:</label></td><td class="description">{{palliative.description}}</td></tr>
     <tr><td><label>userid:</label></td><td>{{palliative.userid}}<span *ngIf="user"> | {{user.username}} | {{user.firstname}} {{user.lastname}}</span></td></tr>
+    <tr><td><label>Test Date/Tech</label><td>{{palliative.testDate}} | {{palliative.testTech}}</td></tr>
+    <tr><td><label>Analysis Date/Tech</label></td><td>{{palliative.analysisDate}} | {{palliative.analysisTech}}</td></tr>
+    <tr><td><label>Laboratory</label></td><td>{{palliative.laboratory}}</td></tr>
     <tr><td><label>mprt <span style="font-family: serif;">&tau;</span>:</label></td><td>{{palliative.mprt}}</td></tr>
     <tr><td><label>mprt <span style="font-family: serif; font-style: italic;">t</span></label></td><td>{{palliative.mprtTime}}</td></tr>
   </tbody>
@@ -17,12 +20,14 @@
     <button *ngIf="!graphVisible" (click)="showGraph()">show</button>
     <button *ngIf="graphVisible" (click)="hideGraph()">hide</button>
     <button *ngIf="graphVisible" (click)="plotGraph()">plot</button>
+    <button *ngIf="graphVisible && !graphDetails" (click)="showDetails()">show details</button>
+    <button *ngIf="graphVisible && graphDetails" (click)="hideDetails()">hide details</button>
     <div *ngIf="graphVisible">
-      <div id="mprtGraphC"></div>
+      <div *ngIf="graphDetails" id="mprtGraphC"></div>
       <div id="mprtGraphLnC"></div>
-      <div id="mprtGraphDeriv1"></div>
-      <div id="mprtGraphDeriv2"></div>
-      <div id="mprtGraphRSQ"></div>
+      <div *ngIf="graphDetails" id="mprtGraphDeriv1"></div>
+      <div *ngIf="graphDetails" id="mprtGraphDeriv2"></div>
+      <div *ngIf="graphDetails" id="mprtGraphRSQ"></div>
     </div>
   </div>
 
@@ -55,7 +60,11 @@
     <div><label>Long Name:</label>&nbsp;<input [(ngModel)]="palliative.longname" placeholder="longname"/></div>
     <div><label>Description:</label>&nbsp;<input [(ngModel)]="palliative.description" placeholder="description"/></div>
     <div><label>User Id:</label>&nbsp;<input [(ngModel)]="palliative.userid" placeholder="userid"/></div>
-
+    <div><label>Test Date:</label>&nbsp;<input [(ngModel)]="palliative.testDate" placeholder="test date"/></div>
+    <div><label>Test Tech:</label>&nbsp;<input [(ngModel)]="palliative.testTech" placeholder="dustfall technician name"/></div>
+    <div><label>Analysis Date:</label>&nbsp;<input [(ngModel)]="palliative.analysisDate" placeholder="analysis date"/></div>
+    <div><label>Analysis Tech:</label>&nbsp;<input [(ngModel)]="palliative.analysisTech" placeholder="analysis technician"/></div>
+    <div><label>Laboratory:</label>&nbsp;<input [(ngModel)]="palliative.laboratory" placeholder="laboratory name"/></div>
     <button (click)="save()">save</button>
     <button (click)="cancel()">cancel</button>
     <button (click)="cleanData()">clean</button>

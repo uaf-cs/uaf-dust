@@ -19,6 +19,7 @@ export class PalliativeDetailComponent implements OnInit {
   @Input() user: User;
   dataVisible = false;
   graphVisible = false;
+  graphDetails = false;
   textboxText = '';
   technicianView = false;
 
@@ -45,7 +46,7 @@ export class PalliativeDetailComponent implements OnInit {
   getPalliative(): void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.palliativeService.getPalliative(id).subscribe(palliative => {
-      this.palliative = palliative;
+      this.palliative = Palliative.CreateFromJSON(palliative);
       this.getUser();
     });
   }
@@ -102,6 +103,14 @@ export class PalliativeDetailComponent implements OnInit {
     this.graphVisible = false;
   }
 
+  showDetails() {
+    this.graphDetails = true;
+  }
+
+  hideDetails() {
+    this.graphDetails = false;
+  }
+
   plotGraph() {
     if (!this.graphVisible)
       return;
@@ -136,7 +145,12 @@ export class PalliativeDetailComponent implements OnInit {
       let data = this.palliative.getXYs(g.type, 'lines', 'scatter');
       let layout = this.palliative.getLayout(g.type);
       e = <HTMLDivElement>document.getElementById(g.id);
+      this.graphDetails = true;
       Plotly.plot(e, data, layout);
+      let self = this;
+      window.setTimeout(() => {
+        self.graphDetails = false;
+      }, 100);
     }
 
 
