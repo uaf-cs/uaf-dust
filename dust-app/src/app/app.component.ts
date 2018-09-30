@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   signedInUser = 'nobody';
 
   constructor(public authService: AuthService,
-    private splashscreenService: SplashscreenService) { }
+    public splashscreenService: SplashscreenService) { }
 
   ngOnInit() {
     this.signedInUser = (this.authService.isLoggedIn ? 'somebody' : 'Log in');

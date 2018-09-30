@@ -52,6 +52,9 @@
         case 'initialize':
             $rr->response = print_r($db->createDatabase());
             break;
+        case 'alter':
+            $rr->response = print_r($db->alterDatabase());
+            break;
         case 'adduser':
             $db->addUser($input['param1'], $input['param2']);
             $rr->response = 'adding user ' . $input['param1'];

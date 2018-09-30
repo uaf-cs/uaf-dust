@@ -143,6 +143,27 @@ EOF;
             return $results;
         }
 
+        function alterDatabase() {
+            $sql = <<<EOF
+            ALTER TABLE palliatives ADD COLUMN testDate TEXT;
+            ALTER TABLE palliatives ADD COLUMN testTech TEXT;
+            ALTER TABLE palliatives ADD COLUMN analysisDate TEXT;
+            ALTER TABLE palliatives ADD COLUMN analysisTech TEXT;
+            ALTER TABLE palliatives ADD COLUMN laboratory TEXT;
+EOF;
+            $ret = $this->exec($sql);
+            $results = array(
+                'operation' => 'create',
+                'results' => 'success',
+                'result' => TRUE
+            );
+            if (!$ret) {
+                $results['results'] = "SQL: '${sql}' | LastErrorMsg(): " . var_export($this->lastErrorMsg());
+                $results['result'] = FALSE;
+            }
+            return $results;
+        }
+
         /**
          * addUser creates a new user in the database with the specified properties. If
          * the user already exists, this method only returns the id of the existing user,
