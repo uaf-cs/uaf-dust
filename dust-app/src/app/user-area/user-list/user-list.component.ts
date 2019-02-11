@@ -37,7 +37,7 @@ export class UserListComponent implements OnInit {
   add(name: string): void {
     name = name.trim();
     if (!name) { return; }
-    this.service.addUser({ id: null, username: name } as User)
+    this.service.addUser(new User(0, name))
       .subscribe(user => {
         this.getUsers();
       });

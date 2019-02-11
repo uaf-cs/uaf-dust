@@ -62,13 +62,15 @@ h1 {
 }
 
 h2 {
-  font-size: 1.2em;
+  font-size: 1em;
+  font-weight: bold;
   margin-top: 0;
   padding-top: 0;
 }
 
 h3 {
   font-size: 1em;
+  font-weight: normal;
   margin-top: 0;
   margin-bottom: 0;
   padding-top: 0;
@@ -139,7 +141,7 @@ button:disabled {
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
-  width: 15em;
+  width: 50em;
 }
 
 .items li {
@@ -172,7 +174,7 @@ button:disabled {
 }
 
 .items a:hover {
-  color:#607D8B;
+  color: #607D8B;
 }
 
 .items .badge {
@@ -195,11 +197,9 @@ button:disabled {
 
 /* UserSearch private styles */
 .search-result li {
-  border-bottom: 1px solid gray;
-  border-left: 1px solid gray;
-  border-right: 1px solid gray;
-  width:195px;
-  height: 16px;
+  border: 1px solid gray;
+  width: 195px;
+  height: 1em;
   padding: 5px;
   background-color: white;
   cursor: pointer;
@@ -219,9 +219,11 @@ button:disabled {
 .search-result li a:hover {
   color: white;
 }
+
 .search-result li a:active {
   color: white;
 }
+
 #search-box {
   width: 200px;
   height: 20px;
@@ -296,11 +298,11 @@ ul.search-result {
 }
 
 tbody.altcolors tr:nth-child(even) {
-  background: #e7e7e7;
+  background: #EEE;
 }
 
 tbody.altcolors tr:nth-child(odd) {
-  background: #d7d7d7;
+  background: #DDD;
 }
 
 td {
@@ -345,4 +347,106 @@ figure {
 
 img.scaled {
   width: 100%;
+}
+
+.row {
+  padding: 5px 10px;
+  margin-bottom: 0.1em;
+  color: #3f3f3f;
+}
+
+.row:nth-child(even) {
+  background: #EEE;
+}
+
+.row:nth-child(odd) {
+  background: #DDD;
+}
+
+.rowheader {
+  padding: 5px 10px;
+  margin-bottom: 0.1em;
+  background: #3f3f3f;
+  color: #f0f0f0;
+  border-radius: 4px 4px 0 0;
+}
+
+.pbadge {
+  display: inline-block;
+  width: 5em;
+  border-radius: 4px 0 0 4px;
+}
+
+.pshortname {
+  display: inline-block;
+  width: 20em;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.ptestid {
+  display: inline-block;
+  width: 10em;
+}
+
+.plaboratory {
+  display: inline-block;
+  width: 20em;
+}
+
+.pdelete {
+  background: #ff0000;
+  color: #f0f0f0;
+  width: 5em;
+}
+
+.pactions {
+  display: inline-block;
+  border-radius: 0 4px 4px 0;
+}
+
+.uusername {
+  display: inline-block;
+  width: 10em;
+}
+
+.uuserrole {
+  display: inline-block;
+  width: 5em;
+}
+
+.ufullname {
+  display: inline-block;
+  width: 20em;
+}
+
+.uemail {
+  display: inline-block;
+  width: 15em;
+}
+
+.uorganization {
+  display: inline-block;
+  width: 15em;
+}
+
+.row row {
+  position: relative;
+  cursor: pointer;
+  background-color: #EEE;
+  margin: .5em;
+  padding: .3em 0;
+  height: 1.6em;
+  border-radius: 4px;
+}
+
+.row row.selected {
+  background-color: #CFD8DC;
+  color: white;
+}
+
+.row row:hover {
+  color: #607D8B;
+  background-color: #DDD;
+  left: .1em;
 }

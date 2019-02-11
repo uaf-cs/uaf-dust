@@ -58,11 +58,11 @@ export class UserService {
 
   /** PUT: update the user on the server */
   updateUser(user: User): Observable<any> {
-    const id = user.id;
+    const id = user.userid;
     const url = `${this.serviceUrl}/${id}`;
     return this.http.put(url, user, httpOptions).pipe(
       retry(3),
-      tap(_ => this.log(`updated user id=${user.id}`)),
+      tap(_ => this.log(`updated user id=${user.userid}`)),
       catchError(this.handleError<any>('updateUser'))
     );
   }
@@ -70,14 +70,14 @@ export class UserService {
   /** POST: add a new user to the server */
   addUser(user: User): Observable<User> {
     return this.http.post<User>(this.serviceUrl, user, httpOptions).pipe(
-      tap((_user: User) => this.log(`added user w/ id=${_user.id}`)),
+      tap((_user: User) => this.log(`added user w/ id=${_user.userid}`)),
       catchError(this.handleError<User>('addUser'))
     );
   }
 
   /** DELETE: delete the user from the server */
   deleteUser(user: User | number): Observable<User> {
-    const id = typeof user === 'number' ? user : user.id;
+    const id = typeof user === 'number' ? user : user.userid;
     const url = `${this.serviceUrl}/${id}`;
 
     return this.http.delete<User>(url, httpOptions).pipe(

@@ -46,12 +46,12 @@ export class UserDetailComponent implements OnInit {
   }
 
   gotoUsers(user: User) {
-    const userId = user ? user.id : null;
+    const userId = user ? user.userid : null;
     this.router.navigate(['/users', { id: userId } ]);
   }
 
   goBack() {
-    this.router.navigate(['/users', { id: this.theUser.id } ]);
+    this.router.navigate(['/users', { id: this.theUser.userid } ]);
   }
 
   // goBack(): void {

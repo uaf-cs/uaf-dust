@@ -9,7 +9,7 @@ import { AuthService } from '../../auth.service';
   styleUrls: ['./palliative-list.component.css']
 })
 export class PalliativeListComponent implements OnInit {
-  palliatives: Palliative[];
+  palliatives: Palliative[] = [];
   private selectedId: number;
 
   constructor(
@@ -21,10 +21,12 @@ export class PalliativeListComponent implements OnInit {
     this.getPalliatives();
   }
 
-  add(name: string): void {
+  add(testid: string, name: string): void {
+    testid = testid.trim();
     name = name.trim();
     if (!name) { return; }
-    this.palliativeService.addPalliative({ id: null, shortname: name } as Palliative)
+    if (!testid) { return; }
+    this.palliativeService.addPalliative({ id: null, testid: testid, shortname: name } as Palliative)
       .subscribe(palliative => {
         this.getPalliatives();
       });

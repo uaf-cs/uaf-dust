@@ -23,8 +23,9 @@
   <a routerLink="/help" routerLinkActive="active">Help</a>
 
   <span *ngIf="!authService.isLoggedIn"><a [routerLink]="[{ outlets: { popup: ['login'] } }]" routerLinkActive="active">Log in</a></span>
-  <span *ngIf="authService.isLoggedIn"><a [routerLink]="[{ outlets: { popup: ['logout'] } }]" routerLinkActive="active">Log out</a>
+  <span *ngIf="authService.isLoggedIn"><a [routerLink]="[{ outlets: { popup: ['logout'] } }]" routerLinkActive="active" (click)='authService.logout()'>Log out</a>
     Signed in as {{authService.signedInUser}}</span>
+    <!-- <button (click)="authService.reconnect()">Reconnect</button> -->
 </nav>
 
 <div class="popup">

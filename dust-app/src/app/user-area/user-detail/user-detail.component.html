@@ -1,14 +1,13 @@
 <div *ngIf="user$ | async as user">
 
   <h3>{{theUser.username | uppercase}} Details</h3>
-  <div><span>id: {{theUser.id}}</span></div>
+  <div><span>id: {{theUser.userid}}</span></div>
   <!-- <div><span>Name: {{theUser.firstname}} {{theUser.lastname}}</span></div>
   <div><span>Organization: {{theUser.organization}}</span></div>
   <div><span>Email: {{theUser.email}}</span></div> -->
   
-  <div><label>First name:<input [(ngModel)]="theUser.firstname" placeholder="firstname"></label></div>
-  <div><label>Last name:<input [(ngModel)]="theUser.lastname" placeholder="lastname"></label></div>
-  <div><label>Organization:<input [(ngModel)]="theUser.organization" placeholder="organization"></label></div>
+  <div><label>Full name:<input [(ngModel)]="theUser.fullname" placeholder="fullname"></label></div>
+\  <div><label>Organization:<input [(ngModel)]="theUser.organization" placeholder="organization"></label></div>
   <div><label>Email:<input [(ngModel)]="theUser.email" placeholder="email"></label></div>
   
   <button *ngIf="authService.isAdmin" (click)="save()">save</button>

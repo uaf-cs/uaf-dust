@@ -162,6 +162,7 @@ function RSQ(knownYs: number[], knownXs: number[]): number {
 export class Palliative {
     id: number;
     userid: number;
+    testid: string;
     shortname: string;
     longname: string;
     description: string;
@@ -180,17 +181,18 @@ export class Palliative {
         let p = new Palliative();
         p.id = palliative.id;
         p.userid = palliative.userid;
+        p.testid = palliative.testid;
         p.shortname = palliative.shortname;
         p.longname = palliative.longname;
-        p.description = palliative.description;
+        p.description = palliative.description || "";
         p.data = [];
         if (palliative.data) {
             for (let dcp of palliative.data) {
                 p.data.push(DustColumnDataPoint.createFromJSON(dcp));
             }    
         }
-        p.mprt = palliative.mprt;
-        p.mprtTime = palliative.mprtTime;
+        p.mprt = palliative.mprt || 0;
+        p.mprtTime = palliative.mprtTime || 0;
 
         // new fields identified
         p.testTech = palliative.testTech ? palliative.testTech : p.testTech;

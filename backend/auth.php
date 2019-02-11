@@ -3,15 +3,25 @@
 include 'constants.php';
 
 session_name(SITENAME);
+if (isset($_POST['session'])) {
+    $session = $_POST['session'];
+    session_id($_POST['session']);
+    // error_log("Yay! got token: $session/" . session_id());
+}
 session_start();
 
+
 /* TODO: delete this code when testing is finished. It is to allow command line arguments from PHP */
-foreach ($argv as $arg) {
-    $e=explode("=",$arg);
-    if(count($e)==2)
-        $_GET[$e[0]]=$e[1];
-    else   
-        $_GET[$e[0]]=0;
+if (isset($argv)) {
+    foreach ($argv as $arg) {
+        $e = explode("=", $arg);
+        if (count($e) == 2) {
+            $_GET[$e[0]] = $e[1];
+        } else {
+            $_GET[$e[0]] = 0;
+        }
+
+    }
 }
 
 /**
@@ -39,7 +49,8 @@ INSERT INTO users (username, hash, role, fullname, organization, email)
 VALUES ('jbmetzgar', '', 'admin', 'Jonathan Metzgar', 'UAF', 'jbmetzgar@alaska.edu');
 EOF;
 
-    function __construct() {
+    public function __construct()
+    {
         parent::__construct(AUTHDB);
         if (!$this->exists()) {
             print "db does not exist or does not contain 'users'";
@@ -54,9 +65,11 @@ EOF;
         $this->userfullname = '';
         $this->userorganization = '';
         $this->useremail = '';
+        $this->session = '';
     }
 
-    function exists() {
+    public function exists()
+    {
         if (!file_exists(AUTHDB)) {
             print "no database";
             return false;
@@ -68,11 +81,12 @@ EOF;
         return true;
     }
 
-    function createDB() {
+    public function createDB()
+    {
         $results = array(
             'operation' => 'create',
             'results' => 'success',
-            'result' => true
+            'result' => true,
         );
         $sql = self::auth_create_sql;
         $ret = $this->exec(self::auth_create_sql);
@@ -80,29 +94,24 @@ EOF;
             $results['results'] = "SQL: '${sql}' | LastErrorMsg(): " . $this->lastErrorMsg();
             $results['result'] = false;
         } else {
+            // update the default user with a default password
             $hash = password_hash('uafdust', PASSWORD_DEFAULT);
             $this->updatefield('jbmetzgar', 'hash', $hash);
-            // update the default user with a default password
-            /*
-            $sql = "UPDATE users SET hash = :hash WHERE username = :username;";
-            $stmt = $this->prepare($sql);
-            $stmt->bindValue(':hash', password_hash('uafdust', PASSWORD_DEFAULT));
-            $stmt->bindValue(':username', 'jbmetzgar');
-            $stmt->execute();
-             */
         }
         $this->close();
 
         return $results;
     }
 
-    function openDB() {
+    public function openDB()
+    {
         if (!$this->exists()) {
             $this->createDB();
         }
     }
 
-    function resetState() {
+    public function resetState()
+    {
         $this->isloggedin = false;
         $this->isadmin = false;
         $this->username = '';
@@ -113,19 +122,23 @@ EOF;
         $this->useremail = '';
     }
 
-    function begin() {
+    public function begin()
+    {
         session_start();
     }
 
-    function session($id) {
+    public function session($id)
+    {
         return isset($_SESSION[$id]) ? $_SESSION[$id] : '';
     }
 
-    function post($id) {
+    public function post($id)
+    {
         return isset($_POST[$id]) ? $_POST[$id] : '';
     }
 
-    function printsession() {
+    public function printsession()
+    {
         print "\n<br>" . $this->session('userid');
         print "\n<br>" . $this->session('username');
         print "\n<br>" . $this->session('userrole');
@@ -134,7 +147,8 @@ EOF;
         print "\n<br>" . $this->session('useremail');
     }
 
-    function setsession() {
+    public function setsession()
+    {
         $_SESSION['userid'] = $this->userid;
         $_SESSION['username'] = $this->username;
         $_SESSION['userrole'] = $this->userrole;
@@ -143,7 +157,8 @@ EOF;
         $_SESSION['useremail'] = $this->useremail;
     }
 
-    function getsession() {
+    public function getsession()
+    {
         if (isset($_SESSION['userid'])) {
             $this->userid = $_SESSION['userid'];
             $this->username = $_SESSION['username'];
@@ -151,14 +166,16 @@ EOF;
             $this->userfullname = $_SESSION['userfullname'];
             $this->userorganization = $_SESSION['userorganization'];
             $this->useremail = $_SESSION['useremail'];
-            $this->setflags();            
+            $this->setflags();
         } else {
             $this->resetState();
+            $this->session = session_id();
             return;
         }
     }
 
-    function setflags() {
+    public function setflags()
+    {
         $this->isloggedin = false;
         $this->isadmin = false;
         if (!empty($this->username)) {
@@ -169,7 +186,8 @@ EOF;
         }
     }
 
-    function updatefield($username, $fieldname, $fieldvalue) {
+    public function updatefield($username, $fieldname, $fieldvalue)
+    {
         $sql = "UPDATE users SET $fieldname = :fieldvalue WHERE username = :username;";
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':username', $username);
@@ -181,7 +199,8 @@ EOF;
         }
     }
 
-    function authfailure($username, $failures) {
+    public function authfailure($username, $failures)
+    {
         $this->updatefield($username, "authfailures", $failures + 1);
 
         $maxFailures = 5;
@@ -194,7 +213,8 @@ EOF;
         }
     }
 
-    function login() {
+    public function login()
+    {
         // User login and password is a POST variable
         //
         $username = isset($_POST['username']) ? $_POST['username'] : '';
@@ -225,7 +245,7 @@ EOF;
                 $this->useremail = $row['email'];
                 $this->setsession();
                 $this->setflags();
-                $this->updatefield($username, "authfailures", 0);                
+                $this->updatefield($username, "authfailures", 0);
                 return true;
             }
             print "<br>Account locked or does not exist\n";
@@ -236,14 +256,16 @@ EOF;
         }
     }
 
-    function logout() {
+    public function logout()
+    {
         session_unset();
         session_destroy();
         $this->resetState();
         session_start();
     }
 
-    function authenticate() {
+    public function authenticate()
+    {
         $logout = false;
         $login = false;
         if (isset($_GET['logout'])) {
@@ -263,8 +285,6 @@ EOF;
             unset($_GET['logout']);
             $this->authenticate();
             return;
-            // print "<meta http-equiv='refresh' content='0;URL=auth.php' />";
-            // exit(0);
         }
 
         $this->getsession();
@@ -276,7 +296,8 @@ EOF;
         }
     }
 
-    function getuser($userid) {
+    public function getuser($userid)
+    {
         $user = array(
             "userid" => "",
             "username" => "",
@@ -290,7 +311,7 @@ EOF;
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':id', $userid);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>SELECT query failed";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}";
         }
@@ -306,9 +327,10 @@ EOF;
         return $user;
     }
 
-    function getusers() {
+    public function getusers()
+    {
         $sql = "SELECT id, username, role, fullname, organization, email"
-            . "FROM users";
+            . " FROM users";
         $result = $this->query($sql);
         $users = array();
         while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -323,16 +345,24 @@ EOF;
         return $users;
     }
 
-    function updateuser() {
-        if (!isset($_GET['user'])) return;
-        if (!isset($_GET['update'])) return;
+    public function updateuser()
+    {
+        if (!isset($_GET['user'])) {
+            return;
+        }
+
+        if (!isset($_GET['update'])) {
+            return;
+        }
 
         $fullname = $this->post('fullname');
         $organization = $this->post('organization');
         $email = $this->post('email');
 
         $id = $this->post('userid');
-        if ($id < 1) return;
+        if ($id < 1) {
+            return;
+        }
 
         if ($id != $this->userid) {
             print "<br>You are only allowed to change your own information";
@@ -347,19 +377,31 @@ EOF;
         $stmt->bindValue(':organization', $organization);
         $stmt->bindValue(':email', $email);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>UPDATE query failed";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}";
         }
     }
 
-    function updatepasswd() {
-        if (!$this->isloggedin) return false;
-        if (!isset($_GET['user'])) return false;
-        if (!isset($_GET['passwd'])) return false;
+    public function updatepasswd()
+    {
+        if (!$this->isloggedin) {
+            return false;
+        }
+
+        if (!isset($_GET['user'])) {
+            return false;
+        }
+
+        if (!isset($_GET['passwd'])) {
+            return false;
+        }
 
         $id = $this->post('userid');
-        if ($id < 1) return;
+        if ($id < 1) {
+            return;
+        }
+
         if ($id != $this->userid) {
             print "<br>You may only change your password";
             return false;
@@ -384,8 +426,7 @@ EOF;
                 }
             }
         }
-        for($l = strlen($oldpassword), $i = 0; $i < $l; $i++)
-        {
+        for ($l = strlen($oldpassword), $i = 0; $i < $l; $i++) {
             $oldpassword[$i] = '@';
         }
         if (!$oldpasswordVerified) {
@@ -404,12 +445,10 @@ EOF;
         }
 
         $hash = password_hash($newpassword1, PASSWORD_DEFAULT);
-        for($l = strlen($newpassword1), $i = 0; $i < $l; $i++)
-        {
+        for ($l = strlen($newpassword1), $i = 0; $i < $l; $i++) {
             $newpassword1[$i] = '@';
         }
-        for($l = strlen($newpassword2), $i = 0; $i < $l; $i++)
-        {
+        for ($l = strlen($newpassword2), $i = 0; $i < $l; $i++) {
             $newpassword2[$i] = '@';
         }
         $sql = "UPDATE users SET hash=:hash WHERE id=:id";
@@ -417,7 +456,7 @@ EOF;
         $stmt->bindValue(':id', $id);
         $stmt->bindValue(':hash', $hash);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>UPDATE query failed\n";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}\n";
             return false;
@@ -426,7 +465,8 @@ EOF;
         return true;
     }
 
-    function admin_getuser($userid) {
+    public function admin_getuser($userid)
+    {
         $user = array(
             "userid" => "",
             "username" => "",
@@ -435,15 +475,18 @@ EOF;
             "organization" => "",
             "email" => "",
             "lockedout" => 0,
-            "authfailures" => 0
+            "authfailures" => 0,
         );
-        if (!$this->isadmin) return $user;
+        if (!$this->isadmin) {
+            return $user;
+        }
+
         $sql = "SELECT id, username, role, fullname, organization, email, lockedout, authfailures "
             . "FROM users WHERE id = :id";
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':id', $userid);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>SELECT query failed";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}";
         }
@@ -461,8 +504,12 @@ EOF;
         return $user;
     }
 
-    function admin_getusers() {
-        if (!$this->isadmin) return array();
+    public function admin_getusers()
+    {
+        if (!$this->isadmin) {
+            return array();
+        }
+
         $sql = "SELECT id, username, role, fullname, organization, email, lockedout, authfailures "
             . "FROM users";
         $result = $this->query($sql);
@@ -482,23 +529,39 @@ EOF;
         return $users;
     }
 
-    function admin_islockedout($username) {
-        if (!$this->isadmin) return false;
+    public function admin_islockedout($username)
+    {
+        if (!$this->isadmin) {
+            return false;
+        }
+
         $sql = "SELECT lockedout FROM users WHERE lockedout <> 0 AND username = :username;";
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':username', $usernamei, SQLITE3_TEXT);
         $result = $stmt->execute();
         $count = 0;
-        while ($row = $result->fetchArray()) $count++;
+        while ($row = $result->fetchArray()) {
+            $count++;
+        }
+
         return $count;
     }
 
-    function admin_adduser() {
-        if (!$this->isadmin) return;
-        if (!isset($_GET['adduser'])) return;
+    public function admin_adduser()
+    {
+        if (!$this->isadmin) {
+            return;
+        }
+
+        if (!isset($_GET['adduser'])) {
+            return;
+        }
+
         $username = $this->post('username');
 
-        if ($username == '' || strlen($username) < 5) return false;
+        if ($username == '' || strlen($username) < 5) {
+            return false;
+        }
 
         if ($this->usernameExists($username)) {
             print "<br>Username $username already exists!";
@@ -512,7 +575,7 @@ EOF;
         $authfailures = 0;
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $sql = "INSERT INTO users (username, hash, role, fullname, organization, email, lockedout, authfailures) "
-            . "VALUES (:username, :hash, :role, :fullname, :organization, :email, :lockedout, :authfailures)";        
+            . "VALUES (:username, :hash, :role, :fullname, :organization, :email, :lockedout, :authfailures)";
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':username', $username);
         $stmt->bindValue(':hash', $hash);
@@ -522,7 +585,7 @@ EOF;
         $stmt->bindValue(':lockedout', $lockedout);
         $stmt->bindValue(':authfailures', $authfailures);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "INSERT query failed";
             echo `whoami`;
             print "Error code: $this->lastErrorCode()} {$this->lastErrorMsg()}";
@@ -532,29 +595,45 @@ EOF;
         }
     }
 
-    function admin_deluser() {
-        if (!$this->isadmin) return;
-        if (!isset($_GET['deluser'])) return;
+    public function admin_deluser()
+    {
+        if (!$this->isadmin) {
+            return;
+        }
+
+        if (!isset($_GET['deluser'])) {
+            return;
+        }
 
         $id = $this->post('userid');
-        if ($id < 1) return;
+        if ($id < 1) {
+            return;
+        }
 
         $sql = "DELETE FROM users WHERE id = :id";
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':id', $id);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>DELETE query failed";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}";
         }
     }
 
-    function admin_unlock() {
-        if (!$this->isadmin) return;
-        if (!isset($_GET['unlock'])) return;
+    public function admin_unlock()
+    {
+        if (!$this->isadmin) {
+            return;
+        }
+
+        if (!isset($_GET['unlock'])) {
+            return;
+        }
 
         $id = $this->post('userid');
-        if ($id < 1) return;
+        if ($id < 1) {
+            return;
+        }
 
         $sql = "UPDATE users SET ";
         $sql = $sql . "lockedout = 0, authfailures = 0";
@@ -562,18 +641,26 @@ EOF;
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':id', $id);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>UPDATE query failed";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}";
         }
     }
 
-    function admin_lock() {
-        if (!$this->isadmin) return;
-        if (!isset($_GET['lock'])) return;
+    public function admin_lock()
+    {
+        if (!$this->isadmin) {
+            return;
+        }
+
+        if (!isset($_GET['lock'])) {
+            return;
+        }
 
         $id = $this->post('userid');
-        if ($id < 1) return;
+        if ($id < 1) {
+            return;
+        }
 
         $sql = "UPDATE users SET ";
         $sql = $sql . "lockedout = 1, authfailures = 0";
@@ -581,13 +668,14 @@ EOF;
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':id', $id);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>UPDATE query failed";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}";
         }
     }
 
-    function usernameExists($username) {
+    public function usernameExists($username)
+    {
         $sql = "SELECT username FROM users WHERE username = :username";
         $stmt = $this->prepare($sql);
         $stmt->bindValue(':username', $username);
@@ -600,10 +688,19 @@ EOF;
         return false;
     }
 
-    function admin_updateuser() {
-        if (!$this->isadmin) return;
-        if (!isset($_GET['user'])) return;
-        if (!isset($_GET['update'])) return;
+    public function admin_updateuser()
+    {
+        if (!$this->isadmin) {
+            return;
+        }
+
+        if (!isset($_GET['user'])) {
+            return;
+        }
+
+        if (!isset($_GET['update'])) {
+            return;
+        }
 
         $username = $this->post('username');
         $role = $this->post('role');
@@ -612,7 +709,10 @@ EOF;
         $email = $this->post('email');
 
         $id = $this->post('userid');
-        if ($id < 1) return;
+        if ($id < 1) {
+            return;
+        }
+
         print "updating $id";
 
         $sql = "UPDATE users SET username=:username, role=:role, fullname=:fullname, organization=:organization, email=:email "
@@ -625,19 +725,31 @@ EOF;
         $stmt->bindValue(':organization', $organization);
         $stmt->bindValue(':email', $email);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>UPDATE query failed";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}";
         }
     }
 
-    function admin_passwd() {
-        if (!$this->isadmin) return;
-        if (!isset($_GET['user'])) return;
-        if (!isset($_GET['passwd'])) return;
+    public function admin_passwd()
+    {
+        if (!$this->isadmin) {
+            return;
+        }
+
+        if (!isset($_GET['user'])) {
+            return;
+        }
+
+        if (!isset($_GET['passwd'])) {
+            return;
+        }
 
         $id = $this->post('userid');
-        if ($id < 1) return;
+        if ($id < 1) {
+            return;
+        }
+
         $password = $this->post('password');
 
         if (strlen($password) < 8) {
@@ -653,7 +765,7 @@ EOF;
         $stmt->bindValue(':id', $id);
         $stmt->bindValue(':hash', $hash);
         $result = $stmt->execute();
-        if (!$result) { 
+        if (!$result) {
             print "<br>UPDATE query failed\n";
             print "<br>Error code: {$this->lastErrorCode()} {$this->lastErrorMsg()}\n";
             return;
@@ -661,6 +773,3 @@ EOF;
         print "<br>password changed\n";
     }
 }
-
-?>
-

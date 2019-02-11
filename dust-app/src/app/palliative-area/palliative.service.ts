@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessageService } from '../messages/message.service';
 import { Palliative } from './palliative';
 import { PalliativesUrl, DevServiceUrl, PhpServiceUrl, BaseServiceUrl } from '../serviceUrls';
+import { AuthService } from '../auth.service';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -18,7 +19,8 @@ export class PalliativeService {
 
   constructor(
     private http: HttpClient,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private authService: AuthService
   ) {
     let url: string = window.location.href;
     if (url.search(/localhost/) >= 0) {
@@ -41,24 +43,35 @@ export class PalliativeService {
     return this.http.get<Palliative[]>(this.serviceUrl)
       .pipe(
         retry(3),
-        // tap(palliatives => this.log('fetched palliatives')),
+        tap(palliatives => {
+          // this.log('fetched palliatives');
+          // console.log(palliatives);
+        }),
         catchError(this.handleError('getPalliatives', []))
       );
   }
 
   /** PUT: update the palliative on the server */
   updatePalliative(palliative: Palliative): Observable<any> {
-    return this.http.put(this.serviceUrl + `/${palliative.id}`, palliative, httpOptions).pipe(
-      retry(3),
-      tap(_ => this.log(`updated palliative id=${palliative.id}`)),
+    let formdata = new FormData();
+    formdata.append('session', this.authService.session);
+    formdata.append('method', 'PUT');
+    formdata.append('data', JSON.stringify(palliative));
+    return this.http.post(this.serviceUrl + `/${palliative.id}`, formdata).pipe(
+      // retry(3),
+      // tap(_ => this.log(`updated palliative id=${palliative.id}`)),
       catchError(this.handleError<any>('updatePalliative'))
     );
   }
 
   /** POST: add a new palliative to the server */
   addPalliative(palliative: Palliative): Observable<Palliative> {
-    return this.http.post<Palliative>(this.serviceUrl, palliative, httpOptions).pipe(
-      tap((_palliative: Palliative) => this.log(`added palliative w/ id=${_palliative.id}`)),
+    let formdata = new FormData();
+    formdata.append('session', this.authService.session);
+    formdata.append('method', 'POST');
+    formdata.append('data', JSON.stringify(palliative));
+    return this.http.post<Palliative>(this.serviceUrl, formdata).pipe(
+      // tap((_palliative: Palliative) => this.log(`added palliative w/ id=${_palliative.id}`)),
       catchError(this.handleError<Palliative>('addPalliative'))
     );
   }
@@ -68,9 +81,14 @@ export class PalliativeService {
     const id = typeof palliative === 'number' ? palliative : palliative.id;
     const url = `${this.serviceUrl}/${id}`;
 
-    return this.http.delete<Palliative>(url, httpOptions).pipe(
+    let formdata = new FormData();
+    formdata.append('session', this.authService.session);
+    formdata.append('method', 'DELETE');
+    formdata.append('data', JSON.stringify({"id": id}));
+
+    return this.http.post<Palliative>(url, formdata).pipe(
       retry(3),
-      tap(_ => this.log(`deleted palliative id=${id}`)),
+      // tap(_ => this.log(`deleted palliative id=${id}`)),
       catchError(this.handleError<Palliative>('deletePalliative'))
     );
   }
@@ -81,7 +99,7 @@ export class PalliativeService {
       // if not search term, return empty palliative array
       return of([]);
     }
-    return this.http.get<Palliative[]>(`${this.serviceUrl}/?shortname=${term}`)
+    return this.http.get<Palliative[]>(`${this.serviceUrl}/?shortname=${term}%`)
       .pipe(
         retry(3),
         // tap(_ => this.log(`found palliatives matching "${term}"`)),

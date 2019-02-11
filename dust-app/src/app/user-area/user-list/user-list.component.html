@@ -10,14 +10,26 @@
   </button>
 </div>
 
-<ul class="items">
-  <li *ngFor="let user of users$ | async"
-  [class.selected]="user.id === selectedId"
-  >
-    <a routerLink="/users/detail/{{user.id}}">
-      <span class="badge">{{user.id}}</span> {{user.username}}</a>
-      <button *ngIf="authService.isAdmin" class="delete" title="delete user" (click)="delete(user)">x</button>
-  </li>
-</ul>
+<div class="rowheader">
+  <div class="pbadge">Id</div>
+  <div *ngIf="authService.isAdmin" class="uusername">Username</div>
+  <div *ngIf="authService.isAdmin" class="uuserrole">Role</div>
+  <div class="ufullname">Full Name</div>
+  <div class="uemail">Email</div>
+  <div class="uorganization">Organization</div>
+  <div *ngIf="authService.isAdmin" class="pactions">Actions</div>
+</div>
 
+<div class="row" *ngFor="let user of users$ | async" [class.selected]="user.userid === selectedId">
+  <div routerLink="/users/detail/{{user.userid}}">
+    <div class="pbadge">{{user.userid}}</div>
+    <div *ngIf="authService.isAdmin" class="uusername">{{user.username}}</div>
+    <div *ngIf="authService.isAdmin" class="uuserrole">{{user.userrole}}</div>
+    <div class="ufullname">{{user.fullname}}</div>
+    <div class="uemail">{{user.email}}</div>
+    <div class="uorganization">{{user.organization}}</div>
+    <div *ngIf="authService.isAdmin" class="pactions"><button *ngIf="authService.isAdmin" class="delete" title="delete user"
+        (click)="delete(user)">x</button></div>
+  </div>
+</div>
 <!-- <app-user-detail [user]="selectedUser"></app-user-detail> -->

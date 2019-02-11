@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SplashscreenService {
-  private disclaimerAccepted_ = false;
+  private disclaimerAccepted_ = true;
   get disclaimerAccepted(): boolean { return this.disclaimerAccepted_; }
   
   constructor() { }

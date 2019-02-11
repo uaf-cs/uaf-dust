@@ -1,19 +1,29 @@
 <app-palliative-search></app-palliative-search>
 
-<div *ngIf="authService.isTechnician">
-    <label>Add Palliative</label>&nbsp;
-      <input #palliativeName />
-    <!-- (click) passes input value to add() and then clears the input -->
-    <button (click)="add(palliativeName.value); palliativeName.value=''">add</button>
+<h2>Palliatives</h2>
+
+<div class="rowheader">
+  <div class="pbadge">Id</div>
+  <div class="ptestid">Test Id</div>
+  <div class="pshortname">Short Name</div>
+  <div class="plaboratory">Laboratory</div>
+  <div class="pactions">Actions</div>
 </div>
 
-<ul class="items">
-  <li *ngFor="let palliative of palliatives">
-    <a routerLink="/palliatives/detail/{{palliative.id}}">
-    <span class="badge">{{palliative.id}}</span>{{palliative.shortname}}</a>
-    <button *ngIf="authService.isAdmin" class="delete" title="delete palliative" (click)="delete(palliative)">x</button>
-  </li>
-</ul>
+<div class="row" *ngFor="let palliative of palliatives">
+  <div class="pbadge">{{palliative.id}}</div>
+  <div class="ptestid">{{palliative.testid}}</div>
+  <div class="pshortname" routerLink="/palliatives/detail/{{palliative.id}}">{{palliative.shortname}}</div>
+  <div class="plaboratory">{{palliative.laboratory}}</div>
+  <div class="pactions"><button class="pdelete" *ngIf="authService.isAdmin" title="delete palliative" (click)="delete(palliative)">x</button></div>
+</div>
+
+<div *ngIf="authService.isLoggedIn">
+  <label>Add Palliative</label>&nbsp;
+  <label>Test Id:</label>&nbsp;<input #palliativeTestid />
+  <label>Short Name:</label>&nbsp;<input #palliativeName />&nbsp;
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button (click)="add(palliativeTestid.value, palliativeName.value); palliativeTestid.value=''; palliativeName.value=''">add</button>
+</div>
 
 <!-- <app-palliative-detail [palliative]="selectedPalliative"></app-palliative-detail> -->
-

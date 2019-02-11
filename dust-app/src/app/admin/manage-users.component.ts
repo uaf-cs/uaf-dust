@@ -43,10 +43,10 @@ export class ManageUsersComponent implements OnInit {
     add(name: string): void {
         name = name.trim();
         if (!name) { return; }
-        this.service.addUser({ id: null, username: name } as User)
+        this.service.addUser({ userid: null, username: name } as User)
           .subscribe(user => {
               this.getUsers();
-              this.selectedId = user.id;
+              this.selectedId = user.userid;
           });
       }
     

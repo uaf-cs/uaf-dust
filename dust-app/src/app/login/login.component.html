@@ -2,8 +2,8 @@
     <h3>LOGIN</h3>
     <p>{{message}}</p>
     <div *ngIf="!authService.isLoggedIn">
-      <label>Username:<input [(ngModel)]="username" placeholder="username"></label><br/>
-      <label>Password:<input type="password" [(ngModel)]="password" placeholder="password"></label>
+      <label>Username:<input [(ngModel)]="authService.username" placeholder="username"></label><br/>
+      <label>Password:<input type="password" [(ngModel)]="authService.password" placeholder="password"></label>
     </div>
     <p>
       <button (click)="login()" *ngIf="!authService.isLoggedIn">Login</button>
