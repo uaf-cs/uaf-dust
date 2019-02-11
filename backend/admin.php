@@ -13,7 +13,7 @@ echo <<<HTML
 <html>
 <head>
 <title>$SITENAME System Administration</title>
-<link rel="stylesheet" type="text/css" href="styles.css">
+<link rel="stylesheet" type="text/css" href="admin-styles.css">
 </head>
 <body>
 <h1>$SITENAME Administration Page</h1>
