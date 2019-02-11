@@ -1,6 +1,8 @@
-#!/usr/bin/sh
+#!/bin/sh
 
-cp -R dust-service/* ~/public_html
-chmod 664 ~/public_html/db/*
-chmod 755 ~/public_html/db
+rm -rf ~/public_html/uafdust/*
+cp -R backend/* ~/public_html
+cp -R frontend/dust-app/* ~/public_html/uafdust
+chmod 664 ~/public_html/uafdust/db/*
+chmod 755 ~/public_html/uafdust/db
 
