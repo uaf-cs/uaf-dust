@@ -2668,7 +2668,7 @@ var PalliativesUrl = '/palliatives';
 var AuthUrl = '/auth';
 var PhpServiceUrl = '/service.php';
 var PhpAdminUrl = '/admin.php';
-var BaseServiceUrl = 'https://uafdust.azurewebsites.net';
+var BaseServiceUrl = 'https://snow.ine.uaf.edu/~jbmetzgar/uafdust';
 var DevServiceUrl = 'http://localhost:8000';
 
 
